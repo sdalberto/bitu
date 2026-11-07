@@ -1,0 +1,80 @@
+html, body { background: transparent; overflow: hidden; }
+body { padding: 6px 10px 12px 6px; }
+
+.panel {
+  height: 100%; display: flex; flex-direction: column; background: var(--paper);
+  border: var(--line) solid var(--ink); border-radius: 22px; box-shadow: 4px 6px 0 var(--ink); overflow: hidden;
+  background-image: radial-gradient(var(--paper-2) 1px, transparent 1.2px); background-size: 14px 14px;
+}
+
+.top {
+  -webkit-app-region: drag; display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 10px 10px 12px; border-bottom: var(--line) solid var(--ink); background: var(--paper);
+}
+.who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mini { width: 40px; height: 40px; flex: none; }
+.name { font-family: var(--font-display); font-weight: 800; font-size: 17px; letter-spacing: -.2px; }
+.status { font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); display: inline-block; }
+.dot.on { background: #33B864; box-shadow: 0 0 0 3px #33B86433; }
+.actions { display: flex; gap: 4px; -webkit-app-region: no-drag; }
+.icon { width: 34px; height: 34px; border-radius: 10px; border: 0; background: transparent; display: grid; place-items: center; }
+.icon:hover { background: var(--paper-2); }
+.icon svg { width: 19px; height: 19px; fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+.log { flex: 1; overflow-y: auto; padding: 16px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
+.empty { margin: auto 8px; text-align: center; color: var(--ink-2); font-size: 14.5px; line-height: 1.5; }
+.empty .big { width: 96px; height: 96px; margin: 0 auto 8px; }
+
+.msg { max-width: 86%; padding: 9px 13px 10px; border-radius: 16px; border: var(--line) solid var(--ink); font-size: 14.5px; line-height: 1.45; word-wrap: break-word; animation: pop .22s cubic-bezier(.3,1.4,.5,1); }
+.msg.me { align-self: flex-end; background: var(--accent); border-bottom-right-radius: 5px; box-shadow: 2px 3px 0 var(--ink); }
+.msg.bot { align-self: flex-start; background: #fff; border-bottom-left-radius: 5px; box-shadow: 2px 3px 0 var(--ink); }
+.msg.err { align-self: stretch; background: #FFE9E9; font-size: 13.5px; box-shadow: none; }
+.msg.sys { align-self: center; background: var(--paper-2); border-style: dashed; font-size: 13px; color: var(--ink-2); text-align: center; box-shadow: none; }
+.msg p { margin: 0 0 6px; } .msg p:last-child { margin: 0; }
+.msg a { color: #1E5FD8; text-underline-offset: 2px; }
+.msg code { font-family: var(--mono); font-size: 12.5px; background: var(--paper-2); padding: 1px 5px; border-radius: 5px; }
+.msg pre { position: relative; margin: 8px 0; padding: 10px 12px; background: #221D1A; color: #F4EDE4; border-radius: 10px; overflow-x: auto; font-size: 12.5px; }
+.msg pre code { background: none; padding: 0; color: inherit; font-size: 12.5px; }
+.msg pre .copy { position: absolute; top: 6px; right: 6px; font-size: 11px; padding: 3px 8px; border-radius: 6px; border: 1px solid #5E544D; background: #2F2824; color: #F4EDE4; }
+.msg img.meme { display: block; width: 100%; max-width: 280px; border-radius: 10px; border: var(--line) solid var(--ink); margin-bottom: 6px; }
+.msg .meta { font-size: 11.5px; color: var(--ink-2); }
+.msg .meta a { cursor: pointer; }
+
+.tool { align-self: flex-start; font-size: 12.5px; color: var(--ink-2); display: flex; align-items: center; gap: 7px; padding-left: 4px; animation: pop .2s; }
+.tool::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); transform: rotate(45deg); }
+
+.typing { align-self: flex-start; padding: 10px 14px; background: #fff; border: var(--line) solid var(--ink); border-radius: 16px; border-bottom-left-radius: 5px; }
+.typing span { display: inline-block; width: 7px; height: 7px; margin: 0 2px; border-radius: 50%; background: var(--ink); animation: bob 1s infinite ease-in-out; }
+.typing span:nth-child(2) { animation-delay: .15s; } .typing span:nth-child(3) { animation-delay: .3s; }
+
+.card { align-self: stretch; background: #FFF4D6; border: var(--line) solid var(--ink); border-radius: 16px; padding: 12px 14px; box-shadow: 2px 3px 0 var(--ink); animation: pop .22s; }
+.card h4 { margin: 0 0 6px; font-size: 14px; }
+.card pre { margin: 0 0 10px; white-space: pre-wrap; font-family: var(--mono); font-size: 12.5px; background: #fff; border: 1.5px solid var(--ink); border-radius: 8px; padding: 8px 10px; max-height: 160px; overflow: auto; }
+.card .row { display: flex; gap: 8px; justify-content: flex-end; }
+.card.done { opacity: .6; } .card.done .row { display: none; }
+
+.chips { display: flex; gap: 6px; padding: 8px 12px 2px; overflow-x: auto; scrollbar-width: none; flex: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; padding: 6px 11px; border-radius: 999px; border: 2px solid var(--ink); background: var(--paper); font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.chip:hover { background: var(--sun); }
+
+.composer { display: flex; align-items: flex-end; gap: 8px; padding: 10px 12px 12px; }
+.composer textarea {
+  flex: 1; resize: none; max-height: 140px; min-height: 42px; padding: 10px 13px; border-radius: 14px;
+  border: var(--line) solid var(--ink); background: #fff; font-size: 14.5px; line-height: 1.35; outline: none;
+}
+.composer textarea:focus { box-shadow: 0 0 0 3px var(--accent-2); }
+.round { width: 42px; height: 42px; border-radius: 50%; border: var(--line) solid var(--ink); display: grid; place-items: center; flex: none; box-shadow: 2px 2px 0 var(--ink); transition: transform .08s, box-shadow .08s; }
+.round:active { transform: translate(2px, 2px); box-shadow: none; }
+.round svg { width: 20px; height: 20px; fill: none; stroke: var(--ink); stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+.send { background: var(--accent); }
+.send .i-stop { display: none; }
+.send.busy { background: var(--rose); }
+.send.busy .i-send { display: none; } .send.busy .i-stop { display: block; fill: var(--ink); }
+.mic { background: var(--paper); }
+.mic.rec { background: var(--rose); animation: rec 1.2s ease-in-out infinite; }
+
+@keyframes pop { from { transform: scale(.92) translateY(4px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes bob { 0%,100% { transform: translateY(0); opacity: .4; } 50% { transform: translateY(-4px); opacity: 1; } }
+@keyframes rec { 0%,100% { box-shadow: 2px 2px 0 var(--ink), 0 0 0 0 #FF6B8166; } 50% { box-shadow: 2px 2px 0 var(--ink), 0 0 0 8px #FF6B8100; } }

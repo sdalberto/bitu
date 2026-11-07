@@ -1,0 +1,342 @@
+/* Textos do Bitu em português, inglês e espanhol. Funciona no Node (main) e nas telas. */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.BituI18n = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  const D = {
+    'pt-BR': {
+      'tray.chat': 'Conversar', 'tray.settings': 'Configurações', 'tray.show': 'Mostrar o Bitu na tela',
+      'tray.dnd': 'Não perturbe', 'tray.stop': 'Parar o que estiver fazendo', 'tray.quit': 'Sair', 'tray.hide': 'Esconder por enquanto',
+      'menu.joke': 'Conta uma piada', 'menu.dance': 'Dança!', 'menu.sleep': 'Vai tirar um cochilo', 'menu.home': 'Volta pro cantinho',
+
+      'chat.placeholder': 'Fala comigo…', 'chat.send': 'Enviar', 'chat.stop': 'Parar', 'chat.listening': 'Tô ouvindo… clica de novo pra enviar',
+      'chat.transcribing': 'Entendendo o que você falou…', 'chat.thinking': 'pensando', 'chat.empty': 'Oi! Pode falar o que quiser — pedir ajuda, desabafar, pedir uma música, ou só bater papo.',
+      'chat.connected': 'conectado', 'chat.disconnected': 'desconectado', 'chat.connect': 'Conectar',
+      'chat.allow': 'Pode', 'chat.deny': 'Não', 'chat.allowTitle': 'Posso fazer isso?', 'chat.stopped': 'Parei.',
+      'chat.clear': 'Limpar conversa', 'chat.clearConfirm': 'Apagar o histórico desta conversa? (o caderninho continua)',
+      'chat.noMic': 'Pra eu te ouvir, conecte uma chave da OpenAI em Configurações (é usada só pra transformar sua voz em texto).',
+      'chat.micDenied': 'Não consegui acessar o microfone.', 'chat.memeSaved': 'Salvo em', 'chat.openFolder': 'abrir pasta',
+      'chat.permBlocked': 'Essa ação está bloqueada nas permissões.', 'chat.openPerms': 'Abrir permissões',
+      'chip.joke': 'Me conta uma piada', 'chip.music': 'O que tá tocando?', 'chip.screen': 'Olha minha tela e me ajuda',
+      'chip.meme': 'Faz um meme sobre segunda-feira', 'chip.day': 'Como foi seu dia? Eu conto o meu', 'chip.news': 'Quais as notícias de hoje?',
+      'tool.buscar_na_internet': 'pesquisando na internet', 'tool.ler_pagina': 'lendo a página', 'tool.abrir_site': 'abrindo o site',
+      'tool.abrir_programa': 'abrindo programa', 'tool.controlar_midia': 'mexendo na música', 'tool.o_que_esta_tocando': 'ouvindo o que tá tocando',
+      'tool.ver_tela': 'olhando sua tela', 'tool.janela_ativa': 'vendo a janela ativa', 'tool.ler_area_de_transferencia': 'lendo o que você copiou',
+      'tool.mover_e_clicar': 'usando o mouse', 'tool.rolar_tela': 'rolando a tela', 'tool.digitar_texto': 'digitando', 'tool.apertar_teclas': 'apertando teclas',
+      'tool.executar_comando': 'rodando comando', 'tool.listar_pasta': 'olhando a pasta', 'tool.ler_arquivo': 'lendo arquivo', 'tool.escrever_arquivo': 'salvando arquivo',
+      'tool.anotar_sobre_usuario': 'anotando no caderninho', 'tool.criar_lembrete': 'marcando lembrete', 'tool.criar_meme': 'fazendo meme',
+
+      'buddy.hello': ['Oi, {name}! Tô aqui no cantinho se precisar.', 'E aí, {name}! Bora?', 'Olha quem chegou! Oi, {name}!'],
+      'buddy.helloNoName': ['Oi! Tô aqui no cantinho se precisar.', 'E aí! Bora fazer coisas legais hoje?'],
+      'buddy.morning': ['Bom dia, {name}! Já tomou café?', 'Bom dia! Que hoje seja leve.'],
+      'buddy.afternoon': ['Boa tarde, {name}!', 'Boa tarde! Como tá indo o dia?'],
+      'buddy.evening': ['Boa noite, {name}!', 'Boa noite! Hora de desacelerar um pouco?'],
+      'buddy.first': ['Prazer! Eu sou o {assistant}. Clica em mim pra conversar, ou me arrasta pra onde quiser!'],
+      'buddy.music': ['Opa, "{title}"! Boa escolha.', 'Essa é boa! {artist} manda bem.', 'Aumenta que isso aí é {title}!', 'Ih, "{title}"… não resisto, vou dançar.', 'Trilha sonora aprovada.'],
+      'buddy.musicNoTitle': ['Música! Não resisto.'],
+      'buddy.notification': ['Chegou coisa no {app}!', 'Psiu, tem novidade no {app}.', 'Notificação do {app}!'],
+      'buddy.notificationFrom': ['{app}: mensagem de {title}.', 'Mensagem de {title} no {app}.'],
+      'buddy.reminder': ['Lembrete: {text}', 'Ei! Você me pediu pra lembrar: {text}'],
+      'buddy.reminderLate': ['Desculpa o atraso (eu tava desligado): {text}'],
+      'buddy.tickle': ['Hahaha, para, faz cócegas!', 'Ei! Hihi', 'Tá bom, tá bom, eu acordei!', 'Isso é um carinho ou um ataque?'],
+      'buddy.tickleMax': ['Chega! Agora eu fiquei tonto…', 'Ok, oficialmente com cócegas demais.'],
+      'buddy.dizzy': ['Uooou… o mundo tá girando.', 'Eita, que montanha-russa!', 'Me deixa no chão, pelo amor!'],
+      'buddy.dropped': ['Weeee!', 'Aterrissagem perfeita.', 'Casa nova? Gostei.'],
+      'buddy.sneeze': ['Atchim! Desculpa… poeira digital.', 'Atchim! Alguém tá falando de mim.'],
+      'buddy.yawn': ['Uaaah… tô aqui, tô aqui.', 'Hmm? Ah, oi! Só descansando os pixels.'],
+      'buddy.idle': ['Quer ajuda com alguma coisa?', 'Tô de olho aqui, qualquer coisa me chama.', 'Já bebeu água hoje?', 'Às vezes eu só fico aqui admirando seu papel de parede.'],
+      'buddy.water': ['Pausa rápida: bebe uma água?', 'Hora de esticar as costas e beber água!', 'Ei, faz um tempo que você tá aí. Levanta, alonga, volta.'],
+      'buddy.late': ['Já tá tarde, hein. Que tal dormir?', 'Madrugada… seu eu de amanhã agradece se você descansar.'],
+      'buddy.friday': ['SEXTOU! 🎉', 'Sexta-feira, meu povo! Sextou!'],
+      'buddy.wake': ['Voltou! Tava com saudade.', 'Ah, oi! Cochilei um pouquinho.'],
+      'buddy.konami': ['MODO LENDÁRIO ATIVADO!', 'Você descobriu o código secreto!'],
+      'buddy.coffee': ['Cafezinho! Pausa merecida.'],
+      'buddy.error': ['Ops, deu ruim: {msg}'],
+      'buddy.needConnect': ['Me conecta no Claude ou no GPT pra eu poder te ajudar!'],
+      'buddy.permBlocked': ['Preciso da sua permissão pra isso. Libera em Configurações > Permissões?'],
+      'buddy.stopped': ['Parei!'],
+      jokes: [
+        'Por que o computador foi ao médico? Porque estava com vírus. E sem antivírus de plano!',
+        'O que o zero disse pro oito? Que cinto bonito!',
+        'Sabe por que o livro de matemática vive triste? Porque tem muitos problemas.',
+        'Qual é o café mais perigoso do mundo? O ex-presso.',
+        'Por que a planta não responde? Porque ela é muda.',
+        'O que o tomate foi fazer no banco? Tirar extrato.',
+        'Qual o cúmulo da rapidez? Fechar a gaveta e trancar a chave lá dentro antes de entrar.',
+        'Por que o programador usa óculos? Porque ele não consegue C#.',
+        'O que a impressora falou pra outra? Essa folha é sua ou é impressão minha?',
+        'Por que o Wi-Fi terminou o namoro? Faltou conexão.',
+        'Sabe qual é o animal mais antigo? A zebra, porque é em preto e branco.',
+        'Como o mar se despede? Dando um tchauzinho de onda.',
+        'Qual a fruta que anda de trem? O kiwiiii-uiii.',
+        'Por que o pato não tem senha no celular? Porque ele já tem o pé de pato. Não faz sentido… mas eu ri.'
+      ],
+      memes: [
+        ['QUANDO VOCÊ FALA "SÓ MAIS 5 MINUTINHOS"', 'E ACORDA 2 HORAS DEPOIS'],
+        ['EU ABRINDO O PC PRA TRABALHAR', 'EU 40 MINUTOS DEPOIS NO YOUTUBE'],
+        ['SEGUNDA-FEIRA CHEGANDO', 'EU QUE NEM DESCANSEI DO DOMINGO'],
+        ['"FUNCIONA NA MINHA MÁQUINA"', 'FAMOSAS ÚLTIMAS PALAVRAS'],
+        ['QUANDO A INTERNET VOLTA', 'E VOCÊ NEM LEMBRA O QUE IA PESQUISAR'],
+        ['EU: VOU DORMIR CEDO HOJE', 'TAMBÉM EU: 2H DA MANHÃ VENDO VÍDEO DE GATO']
+      ],
+
+      'set.title': 'Configurações', 'set.connection': 'Conexão', 'set.avatar': 'Avatar', 'set.voice': 'Voz', 'set.perms': 'Permissões',
+      'set.personality': 'Jeito', 'set.memory': 'Memória e privacidade', 'set.general': 'Geral', 'set.about': 'Sobre',
+      'set.provider': 'Qual IA eu uso para pensar?', 'set.use': 'Usar', 'set.claude': 'Claude', 'set.gpt': 'ChatGPT',
+      'set.connectHelp': 'Clique em Conectar: a página da sua conta abre no navegador. Lá, crie uma chave (botão "Create Key"), clique em copiar — e pronto, eu pego sozinho e conecto. A chave fica criptografada só neste PC.',
+      'set.connectBtn': 'Conectar', 'set.reconnect': 'Trocar chave', 'set.disconnect': 'Desconectar', 'set.waiting': 'Esperando você copiar a chave…',
+      'set.checking': 'Testando a chave…', 'set.connectedOk': 'Conectado!', 'set.notConnected': 'Não conectado', 'set.cancel': 'Cancelar',
+      'set.pasteManual': 'Ou cole a chave aqui', 'set.save': 'Salvar', 'set.model': 'Modelo', 'set.timeout': 'Não vi nenhuma chave copiada. Tenta de novo?',
+      'set.claudeNote': 'Precisa de uma conta no console da Anthropic com créditos (é diferente da assinatura do app Claude).',
+      'set.gptNote': 'Precisa de uma conta na plataforma da OpenAI com créditos. Essa chave também libera o microfone e vozes extras.',
+      'set.avatarBuiltin': 'Criar o meu', 'set.avatarImage': 'Usar uma imagem', 'set.avatarPack': 'Pacote animado',
+      'set.shape': 'Formato', 'set.color': 'Cor', 'set.eyes': 'Olhos', 'set.accessory': 'Acessório', 'set.cheeks': 'Bochechas coradas',
+      'set.name': 'Nome do seu amigo', 'set.userName': 'Como eu te chamo?', 'set.importImg': 'Escolher imagem (PNG, GIF, WebP, SVG)', 'set.importPack': 'Escolher pasta do pacote',
+      'set.size': 'Tamanho', 'set.random': 'Surpreenda-me',
+      'set.voiceOn': 'Falar em voz alta', 'set.voiceEngine': 'Motor de voz', 'set.voiceSystem': 'Vozes do Windows (grátis, offline)', 'set.voiceOpenAI': 'Vozes naturais da OpenAI (usa créditos)',
+      'set.voicePick': 'Voz', 'set.rate': 'Velocidade', 'set.pitch': 'Tom', 'set.volume': 'Volume', 'set.test': 'Testar voz',
+      'set.voiceTest': 'Oi! Essa é a minha voz. Gostou?', 'set.voiceNote': 'A API do Claude não gera áudio — por isso a voz vem do Windows ou da OpenAI. Dica: em Configurações do Windows > Hora e idioma > Fala, dá pra baixar mais vozes.',
+      'set.perm.screen': 'Ver a tela', 'set.perm.screenD': 'Tirar print quando você pedir ajuda, ver qual app está aberto e ler o que você copiou.',
+      'set.perm.control': 'Mexer mouse e teclado', 'set.perm.controlD': 'Clicar, digitar e usar atalhos por você.',
+      'set.perm.commands': 'Rodar comandos', 'set.perm.commandsD': 'Executar comandos no PowerShell (ótimo pra programação). Sempre pergunta antes.',
+      'set.perm.files': 'Arquivos', 'set.perm.filesD': 'Ler e salvar arquivos e código. Salvar sempre pergunta antes e faz backup.',
+      'set.perm.music': 'Perceber músicas', 'set.perm.musicD': 'Saber o que está tocando (Spotify, YouTube, etc.) para comentar e dançar.',
+      'set.perm.notifications': 'Perceber notificações', 'set.perm.notificationsD': 'Avisar quando chegar mensagem. Se o Windows pedir, permita o acesso às notificações.',
+      'set.confirm': 'Perguntar antes de cada ação no PC', 'set.confirmD': 'Recomendado. Se desligar, só comandos e salvar arquivos continuam perguntando.',
+      'set.stopHint': 'Atalho de emergência para parar tudo:',
+      'set.humor': 'Nível de zoeira', 'set.humor0': 'Sério', 'set.humor1': 'Leve', 'set.humor2': 'Divertido', 'set.humor3': 'Palhaço',
+      'set.commentMusic': 'Comentar músicas', 'set.readNotif': 'Ler quem mandou a mensagem', 'set.wellbeing': 'Lembretes de água e pausa',
+      'set.roam': 'Passear pela tela', 'set.sneeze': 'Espirros e manias aleatórias', 'set.dnd': 'Não perturbe (fica quietinho)',
+      'set.speakReplies': 'Ler as respostas em voz alta',
+      'set.lang': 'Idioma', 'set.startWin': 'Abrir junto com o Windows', 'set.shortcuts': 'Atalhos',
+      'set.sc.chat': 'Abrir/fechar conversa', 'set.sc.listen': 'Falar por voz', 'set.sc.stop': 'Parar tudo',
+      'set.mem.where': 'Tudo fica salvo apenas neste computador, criptografado pelo Windows.', 'set.mem.notes': 'Caderninho (o que eu sei sobre você)',
+      'set.mem.empty': 'Nada anotado ainda.', 'set.mem.export': 'Exportar memória', 'set.mem.folder': 'Abrir pasta', 'set.mem.clear': 'Apagar conversas',
+      'set.mem.wipe': 'Apagar TUDO (conversas, caderninho e chaves)', 'set.mem.wipeConfirm': 'Tem certeza? Isso apaga conversas, anotações e desconecta as IAs. Não dá pra desfazer.',
+      'set.mem.sent': 'O que você escreve é enviado só para a IA escolhida (Anthropic ou OpenAI) para gerar a resposta.',
+      'set.about.text': 'Bitu é um amigo digital de código aberto. Feito com carinho por Silviano Dalberto Pessi — Ideias Livres Desenvolvimentos.',
+      'onb.welcome': 'Oi! Eu sou o Bitu.', 'onb.welcomeD': 'Vou morar aqui no cantinho da sua tela, em cima do relógio. Bora me configurar? Leva 1 minuto.',
+      'onb.lang': 'Em qual idioma a gente conversa?', 'onb.names': 'Como a gente se chama?', 'onb.connect': 'Me conecta numa IA', 'onb.avatar': 'Escolhe minha cara',
+      'onb.done': 'Prontinho!', 'onb.doneD': 'Clica em mim pra conversar. Arrasta pra mudar de lugar. Botão direito abre o menu. Ctrl+Alt+B abre a conversa de qualquer lugar.',
+      'onb.next': 'Continuar', 'onb.back': 'Voltar', 'onb.skip': 'Fazer depois', 'onb.finish': 'Começar!'
+    },
+
+    en: {
+      'tray.chat': 'Chat', 'tray.settings': 'Settings', 'tray.show': 'Show Bitu on screen', 'tray.dnd': 'Do not disturb',
+      'tray.stop': 'Stop what it is doing', 'tray.quit': 'Quit', 'tray.hide': 'Hide for now',
+      'menu.joke': 'Tell me a joke', 'menu.dance': 'Dance!', 'menu.sleep': 'Take a nap', 'menu.home': 'Back to your corner',
+      'chat.placeholder': 'Talk to me…', 'chat.send': 'Send', 'chat.stop': 'Stop', 'chat.listening': "I'm listening… click again to send",
+      'chat.transcribing': 'Understanding what you said…', 'chat.thinking': 'thinking', 'chat.empty': 'Hi! Say anything — ask for help, vent, ask for a song, or just chat.',
+      'chat.connected': 'connected', 'chat.disconnected': 'disconnected', 'chat.connect': 'Connect',
+      'chat.allow': 'Go ahead', 'chat.deny': 'No', 'chat.allowTitle': 'Can I do this?', 'chat.stopped': 'Stopped.',
+      'chat.clear': 'Clear chat', 'chat.clearConfirm': 'Delete this chat history? (the notebook stays)',
+      'chat.noMic': 'To hear you, connect an OpenAI key in Settings (used only to turn your voice into text).',
+      'chat.micDenied': "Couldn't access the microphone.", 'chat.memeSaved': 'Saved to', 'chat.openFolder': 'open folder',
+      'chat.permBlocked': 'This action is blocked in permissions.', 'chat.openPerms': 'Open permissions',
+      'chip.joke': 'Tell me a joke', 'chip.music': "What's playing?", 'chip.screen': 'Look at my screen and help me',
+      'chip.meme': 'Make a meme about Mondays', 'chip.day': "How was your day? I'll tell you mine", 'chip.news': "What's in the news today?",
+      'tool.buscar_na_internet': 'searching the web', 'tool.ler_pagina': 'reading the page', 'tool.abrir_site': 'opening the site',
+      'tool.abrir_programa': 'opening app', 'tool.controlar_midia': 'controlling music', 'tool.o_que_esta_tocando': 'checking what is playing',
+      'tool.ver_tela': 'looking at your screen', 'tool.janela_ativa': 'checking active window', 'tool.ler_area_de_transferencia': 'reading your clipboard',
+      'tool.mover_e_clicar': 'using the mouse', 'tool.rolar_tela': 'scrolling', 'tool.digitar_texto': 'typing', 'tool.apertar_teclas': 'pressing keys',
+      'tool.executar_comando': 'running command', 'tool.listar_pasta': 'looking at folder', 'tool.ler_arquivo': 'reading file', 'tool.escrever_arquivo': 'saving file',
+      'tool.anotar_sobre_usuario': 'writing in my notebook', 'tool.criar_lembrete': 'setting reminder', 'tool.criar_meme': 'making a meme',
+      'buddy.hello': ["Hi, {name}! I'm right here if you need me.", "Hey {name}! Let's go?"],
+      'buddy.helloNoName': ["Hi! I'm right here in the corner if you need me."],
+      'buddy.morning': ['Good morning, {name}! Had your coffee yet?'], 'buddy.afternoon': ['Good afternoon, {name}!'], 'buddy.evening': ['Good evening, {name}!'],
+      'buddy.first': ["Nice to meet you! I'm {assistant}. Click me to chat, or drag me anywhere!"],
+      'buddy.music': ['Ooh, "{title}"! Great pick.', "This one's good! {artist} rocks.", 'Turn it up, it\'s {title}!', "Can't resist, I'm dancing."],
+      'buddy.musicNoTitle': ["Music! Can't resist."],
+      'buddy.notification': ['Something arrived on {app}!', 'Psst, news on {app}.'],
+      'buddy.notificationFrom': ['{app}: message from {title}.'],
+      'buddy.reminder': ['Reminder: {text}', 'Hey! You asked me to remind you: {text}'], 'buddy.reminderLate': ['Sorry, I was off: {text}'],
+      'buddy.tickle': ['Hahaha, stop, that tickles!', 'Hey! Hehe', 'Is that a hug or an attack?'], 'buddy.tickleMax': ["Enough! Now I'm dizzy…"],
+      'buddy.dizzy': ['Whoaaa… the world is spinning.', 'What a rollercoaster!'], 'buddy.dropped': ['Wheee!', 'Perfect landing.'],
+      'buddy.sneeze': ['Achoo! Sorry… digital dust.'], 'buddy.yawn': ["Yaaawn… I'm here, I'm here."],
+      'buddy.idle': ['Need help with anything?', 'Had some water today?'], 'buddy.water': ['Quick break: drink some water?', 'Time to stretch!'],
+      'buddy.late': ["It's late. How about some sleep?"], 'buddy.friday': ["IT'S FRIDAY! 🎉"], 'buddy.wake': ['You\'re back! Missed you.'],
+      'buddy.konami': ['LEGENDARY MODE ON!'], 'buddy.coffee': ['Coffee break!'], 'buddy.error': ['Oops: {msg}'],
+      'buddy.needConnect': ['Connect me to Claude or GPT so I can help!'], 'buddy.permBlocked': ['I need your permission for that. Turn it on in Settings > Permissions?'],
+      'buddy.stopped': ['Stopped!'],
+      jokes: [
+        'Why did the computer go to the doctor? It had a virus!',
+        'Why do programmers prefer dark mode? Because light attracts bugs.',
+        'What did the zero say to the eight? Nice belt!',
+        'Why was the math book sad? It had too many problems.',
+        "I told my Wi-Fi we needed to talk. It said it couldn't find a connection.",
+        "Why don't skeletons fight each other? They don't have the guts.",
+        'What do you call a fake noodle? An impasta.',
+        'Why did the scarecrow win an award? He was outstanding in his field.'
+      ],
+      memes: [
+        ['ME: JUST 5 MORE MINUTES', 'ALSO ME: 2 HOURS LATER'],
+        ['"IT WORKS ON MY MACHINE"', 'FAMOUS LAST WORDS'],
+        ['MONDAY IS COMING', 'I HAVEN\'T RECOVERED FROM SUNDAY'],
+        ['ME OPENING MY PC TO WORK', 'ME 40 MINUTES LATER ON YOUTUBE']
+      ],
+      'set.title': 'Settings', 'set.connection': 'Connection', 'set.avatar': 'Avatar', 'set.voice': 'Voice', 'set.perms': 'Permissions',
+      'set.personality': 'Personality', 'set.memory': 'Memory & privacy', 'set.general': 'General', 'set.about': 'About',
+      'set.provider': 'Which AI do I think with?', 'set.use': 'Use', 'set.claude': 'Claude', 'set.gpt': 'ChatGPT',
+      'set.connectHelp': 'Click Connect: your account page opens in the browser. Create a key ("Create Key"), click copy — done, I grab it and connect. The key stays encrypted on this PC only.',
+      'set.connectBtn': 'Connect', 'set.reconnect': 'Change key', 'set.disconnect': 'Disconnect', 'set.waiting': 'Waiting for you to copy the key…',
+      'set.checking': 'Testing the key…', 'set.connectedOk': 'Connected!', 'set.notConnected': 'Not connected', 'set.cancel': 'Cancel',
+      'set.pasteManual': 'Or paste the key here', 'set.save': 'Save', 'set.model': 'Model', 'set.timeout': "I didn't see a copied key. Try again?",
+      'set.claudeNote': 'Needs an Anthropic Console account with credits (different from the Claude app subscription).',
+      'set.gptNote': 'Needs an OpenAI platform account with credits. This key also enables the microphone and extra voices.',
+      'set.avatarBuiltin': 'Build my own', 'set.avatarImage': 'Use an image', 'set.avatarPack': 'Animated pack',
+      'set.shape': 'Shape', 'set.color': 'Color', 'set.eyes': 'Eyes', 'set.accessory': 'Accessory', 'set.cheeks': 'Rosy cheeks',
+      'set.name': "Your buddy's name", 'set.userName': 'What should I call you?', 'set.importImg': 'Choose image (PNG, GIF, WebP, SVG)', 'set.importPack': 'Choose pack folder',
+      'set.size': 'Size', 'set.random': 'Surprise me',
+      'set.voiceOn': 'Speak out loud', 'set.voiceEngine': 'Voice engine', 'set.voiceSystem': 'Windows voices (free, offline)', 'set.voiceOpenAI': 'OpenAI natural voices (uses credits)',
+      'set.voicePick': 'Voice', 'set.rate': 'Speed', 'set.pitch': 'Pitch', 'set.volume': 'Volume', 'set.test': 'Test voice',
+      'set.voiceTest': "Hi! This is my voice. Like it?", 'set.voiceNote': "Claude's API doesn't produce audio, so the voice comes from Windows or OpenAI. Tip: Windows Settings > Time & language > Speech lets you download more voices.",
+      'set.perm.screen': 'See the screen', 'set.perm.screenD': 'Take a screenshot when you ask for help, see the active app, read what you copied.',
+      'set.perm.control': 'Use mouse & keyboard', 'set.perm.controlD': 'Click, type and use shortcuts for you.',
+      'set.perm.commands': 'Run commands', 'set.perm.commandsD': 'Run PowerShell commands (great for coding). Always asks first.',
+      'set.perm.files': 'Files', 'set.perm.filesD': 'Read and save files and code. Saving always asks first and makes a backup.',
+      'set.perm.music': 'Notice music', 'set.perm.musicD': "Know what's playing (Spotify, YouTube, etc.) to comment and dance.",
+      'set.perm.notifications': 'Notice notifications', 'set.perm.notificationsD': 'Tell you when a message arrives. If Windows asks, allow notification access.',
+      'set.confirm': 'Ask before each PC action', 'set.confirmD': 'Recommended. If off, only commands and file saves still ask.',
+      'set.stopHint': 'Emergency shortcut to stop everything:',
+      'set.humor': 'Silliness level', 'set.humor0': 'Serious', 'set.humor1': 'Light', 'set.humor2': 'Fun', 'set.humor3': 'Clown',
+      'set.commentMusic': 'Comment on songs', 'set.readNotif': 'Say who sent the message', 'set.wellbeing': 'Water & break reminders',
+      'set.roam': 'Walk around the screen', 'set.sneeze': 'Random sneezes & quirks', 'set.dnd': 'Do not disturb (stay quiet)', 'set.speakReplies': 'Read replies out loud',
+      'set.lang': 'Language', 'set.startWin': 'Start with Windows', 'set.shortcuts': 'Shortcuts',
+      'set.sc.chat': 'Open/close chat', 'set.sc.listen': 'Talk by voice', 'set.sc.stop': 'Stop everything',
+      'set.mem.where': 'Everything is stored only on this computer, encrypted by Windows.', 'set.mem.notes': 'Notebook (what I know about you)',
+      'set.mem.empty': 'Nothing noted yet.', 'set.mem.export': 'Export memory', 'set.mem.folder': 'Open folder', 'set.mem.clear': 'Delete chats',
+      'set.mem.wipe': 'Delete EVERYTHING (chats, notebook and keys)', 'set.mem.wipeConfirm': 'Are you sure? This deletes chats, notes and disconnects the AIs. Cannot be undone.',
+      'set.mem.sent': 'What you write is sent only to the chosen AI (Anthropic or OpenAI) to generate the reply.',
+      'set.about.text': 'Bitu is an open-source digital buddy. Made with care by Silviano Dalberto Pessi — Ideias Livres Desenvolvimentos.',
+      'onb.welcome': "Hi! I'm Bitu.", 'onb.welcomeD': "I'll live in the corner of your screen, right above the clock. Let's set me up? Takes a minute.",
+      'onb.lang': 'Which language do we speak?', 'onb.names': "What are our names?", 'onb.connect': 'Connect me to an AI', 'onb.avatar': 'Pick my look',
+      'onb.done': 'All set!', 'onb.doneD': 'Click me to chat. Drag to move me. Right-click for the menu. Ctrl+Alt+B opens the chat from anywhere.',
+      'onb.next': 'Continue', 'onb.back': 'Back', 'onb.skip': 'Later', 'onb.finish': "Let's go!"
+    },
+
+    es: {
+      'tray.chat': 'Conversar', 'tray.settings': 'Configuración', 'tray.show': 'Mostrar a Bitu', 'tray.dnd': 'No molestar',
+      'tray.stop': 'Detener lo que esté haciendo', 'tray.quit': 'Salir', 'tray.hide': 'Ocultar por ahora',
+      'menu.joke': 'Cuéntame un chiste', 'menu.dance': '¡Baila!', 'menu.sleep': 'Toma una siesta', 'menu.home': 'Vuelve a tu rincón',
+      'chat.placeholder': 'Háblame…', 'chat.send': 'Enviar', 'chat.stop': 'Detener', 'chat.listening': 'Te escucho… haz clic de nuevo para enviar',
+      'chat.transcribing': 'Entendiendo lo que dijiste…', 'chat.thinking': 'pensando', 'chat.empty': '¡Hola! Dime lo que quieras: pedir ayuda, desahogarte, pedir una canción o solo charlar.',
+      'chat.connected': 'conectado', 'chat.disconnected': 'desconectado', 'chat.connect': 'Conectar',
+      'chat.allow': 'Dale', 'chat.deny': 'No', 'chat.allowTitle': '¿Puedo hacer esto?', 'chat.stopped': 'Me detuve.',
+      'chat.clear': 'Borrar conversación', 'chat.clearConfirm': '¿Borrar el historial? (la libreta se queda)',
+      'chat.noMic': 'Para escucharte, conecta una clave de OpenAI en Configuración (solo se usa para convertir tu voz en texto).',
+      'chat.micDenied': 'No pude acceder al micrófono.', 'chat.memeSaved': 'Guardado en', 'chat.openFolder': 'abrir carpeta',
+      'chat.permBlocked': 'Esta acción está bloqueada en los permisos.', 'chat.openPerms': 'Abrir permisos',
+      'chip.joke': 'Cuéntame un chiste', 'chip.music': '¿Qué está sonando?', 'chip.screen': 'Mira mi pantalla y ayúdame',
+      'chip.meme': 'Haz un meme sobre los lunes', 'chip.day': '¿Cómo te fue hoy? Te cuento el mío', 'chip.news': '¿Cuáles son las noticias de hoy?',
+      'tool.buscar_na_internet': 'buscando en internet', 'tool.ler_pagina': 'leyendo la página', 'tool.abrir_site': 'abriendo el sitio',
+      'tool.abrir_programa': 'abriendo programa', 'tool.controlar_midia': 'controlando la música', 'tool.o_que_esta_tocando': 'escuchando qué suena',
+      'tool.ver_tela': 'mirando tu pantalla', 'tool.janela_ativa': 'viendo la ventana activa', 'tool.ler_area_de_transferencia': 'leyendo lo que copiaste',
+      'tool.mover_e_clicar': 'usando el mouse', 'tool.rolar_tela': 'desplazando', 'tool.digitar_texto': 'escribiendo', 'tool.apertar_teclas': 'presionando teclas',
+      'tool.executar_comando': 'ejecutando comando', 'tool.listar_pasta': 'mirando la carpeta', 'tool.ler_arquivo': 'leyendo archivo', 'tool.escrever_arquivo': 'guardando archivo',
+      'tool.anotar_sobre_usuario': 'anotando en la libreta', 'tool.criar_lembrete': 'creando recordatorio', 'tool.criar_meme': 'haciendo un meme',
+      'buddy.hello': ['¡Hola, {name}! Estoy aquí en la esquina si me necesitas.', '¡Qué tal, {name}! ¿Vamos?'],
+      'buddy.helloNoName': ['¡Hola! Estoy aquí en la esquina si me necesitas.'],
+      'buddy.morning': ['¡Buenos días, {name}! ¿Ya tomaste café?'], 'buddy.afternoon': ['¡Buenas tardes, {name}!'], 'buddy.evening': ['¡Buenas noches, {name}!'],
+      'buddy.first': ['¡Mucho gusto! Soy {assistant}. Haz clic en mí para conversar o arrástrame a donde quieras.'],
+      'buddy.music': ['¡Uy, "{title}"! Buena elección.', '¡Esa está buena! {artist} la rompe.', 'No me resisto, voy a bailar.'],
+      'buddy.musicNoTitle': ['¡Música! No me resisto.'],
+      'buddy.notification': ['¡Llegó algo en {app}!', 'Psst, novedades en {app}.'], 'buddy.notificationFrom': ['{app}: mensaje de {title}.'],
+      'buddy.reminder': ['Recordatorio: {text}', '¡Oye! Me pediste recordarte: {text}'], 'buddy.reminderLate': ['Perdón, estaba apagado: {text}'],
+      'buddy.tickle': ['¡Jajaja, para, me haces cosquillas!', '¡Oye! Jiji'], 'buddy.tickleMax': ['¡Basta! Ahora estoy mareado…'],
+      'buddy.dizzy': ['Uuuh… el mundo da vueltas.'], 'buddy.dropped': ['¡Wiii!', 'Aterrizaje perfecto.'],
+      'buddy.sneeze': ['¡Achís! Perdón… polvo digital.'], 'buddy.yawn': ['Aaah… aquí estoy, aquí estoy.'],
+      'buddy.idle': ['¿Necesitas ayuda con algo?', '¿Ya tomaste agua hoy?'], 'buddy.water': ['Pausa rápida: ¿un poco de agua?', '¡Hora de estirarse!'],
+      'buddy.late': ['Ya es tarde. ¿Qué tal dormir?'], 'buddy.friday': ['¡ES VIERNES! 🎉'], 'buddy.wake': ['¡Volviste! Te extrañé.'],
+      'buddy.konami': ['¡MODO LEGENDARIO ACTIVADO!'], 'buddy.coffee': ['¡Cafecito! Pausa merecida.'], 'buddy.error': ['Ups: {msg}'],
+      'buddy.needConnect': ['¡Conéctame a Claude o GPT para poder ayudarte!'], 'buddy.permBlocked': ['Necesito tu permiso para eso. ¿Lo activas en Configuración > Permisos?'],
+      'buddy.stopped': ['¡Me detuve!'],
+      jokes: [
+        '¿Por qué la computadora fue al médico? ¡Porque tenía un virus!',
+        '¿Qué le dijo un cero a un ocho? ¡Bonito cinturón!',
+        '¿Por qué el libro de matemáticas está triste? Porque tiene muchos problemas.',
+        '¿Qué hace una abeja en el gimnasio? ¡Zum-ba!',
+        '¿Cuál es el café más peligroso? El ex-preso.',
+        '¿Por qué el Wi-Fi terminó la relación? Le faltó conexión.',
+        '¿Qué le dice una iguana a su hermana gemela? Somos iguanitas.'
+      ],
+      memes: [
+        ['YO: SOLO 5 MINUTITOS MÁS', 'TAMBIÉN YO: 2 HORAS DESPUÉS'],
+        ['"EN MI MÁQUINA FUNCIONA"', 'FAMOSAS ÚLTIMAS PALABRAS'],
+        ['LLEGA EL LUNES', 'Y YO SIN RECUPERARME DEL DOMINGO']
+      ],
+      'set.title': 'Configuración', 'set.connection': 'Conexión', 'set.avatar': 'Avatar', 'set.voice': 'Voz', 'set.perms': 'Permisos',
+      'set.personality': 'Personalidad', 'set.memory': 'Memoria y privacidad', 'set.general': 'General', 'set.about': 'Acerca de',
+      'set.provider': '¿Con qué IA pienso?', 'set.use': 'Usar', 'set.claude': 'Claude', 'set.gpt': 'ChatGPT',
+      'set.connectHelp': 'Haz clic en Conectar: la página de tu cuenta se abre en el navegador. Crea una clave ("Create Key"), haz clic en copiar y listo: la tomo y me conecto. La clave queda cifrada solo en esta PC.',
+      'set.connectBtn': 'Conectar', 'set.reconnect': 'Cambiar clave', 'set.disconnect': 'Desconectar', 'set.waiting': 'Esperando que copies la clave…',
+      'set.checking': 'Probando la clave…', 'set.connectedOk': '¡Conectado!', 'set.notConnected': 'No conectado', 'set.cancel': 'Cancelar',
+      'set.pasteManual': 'O pega la clave aquí', 'set.save': 'Guardar', 'set.model': 'Modelo', 'set.timeout': 'No vi ninguna clave copiada. ¿Intentas de nuevo?',
+      'set.claudeNote': 'Requiere una cuenta en la consola de Anthropic con créditos (distinta de la suscripción de la app Claude).',
+      'set.gptNote': 'Requiere una cuenta en la plataforma de OpenAI con créditos. Esta clave también activa el micrófono y voces extra.',
+      'set.avatarBuiltin': 'Crear el mío', 'set.avatarImage': 'Usar una imagen', 'set.avatarPack': 'Paquete animado',
+      'set.shape': 'Forma', 'set.color': 'Color', 'set.eyes': 'Ojos', 'set.accessory': 'Accesorio', 'set.cheeks': 'Mejillas rosadas',
+      'set.name': 'Nombre de tu amigo', 'set.userName': '¿Cómo te llamo?', 'set.importImg': 'Elegir imagen (PNG, GIF, WebP, SVG)', 'set.importPack': 'Elegir carpeta del paquete',
+      'set.size': 'Tamaño', 'set.random': 'Sorpréndeme',
+      'set.voiceOn': 'Hablar en voz alta', 'set.voiceEngine': 'Motor de voz', 'set.voiceSystem': 'Voces de Windows (gratis, sin conexión)', 'set.voiceOpenAI': 'Voces naturales de OpenAI (usa créditos)',
+      'set.voicePick': 'Voz', 'set.rate': 'Velocidad', 'set.pitch': 'Tono', 'set.volume': 'Volumen', 'set.test': 'Probar voz',
+      'set.voiceTest': '¡Hola! Esta es mi voz. ¿Te gusta?', 'set.voiceNote': 'La API de Claude no genera audio, por eso la voz viene de Windows o de OpenAI.',
+      'set.perm.screen': 'Ver la pantalla', 'set.perm.screenD': 'Tomar captura cuando pidas ayuda, ver la app activa y leer lo que copiaste.',
+      'set.perm.control': 'Usar mouse y teclado', 'set.perm.controlD': 'Hacer clic, escribir y usar atajos por ti.',
+      'set.perm.commands': 'Ejecutar comandos', 'set.perm.commandsD': 'Ejecutar comandos de PowerShell. Siempre pregunta antes.',
+      'set.perm.files': 'Archivos', 'set.perm.filesD': 'Leer y guardar archivos y código. Guardar siempre pregunta y hace respaldo.',
+      'set.perm.music': 'Notar la música', 'set.perm.musicD': 'Saber qué suena (Spotify, YouTube, etc.) para comentar y bailar.',
+      'set.perm.notifications': 'Notar notificaciones', 'set.perm.notificationsD': 'Avisarte cuando llegue un mensaje.',
+      'set.confirm': 'Preguntar antes de cada acción en la PC', 'set.confirmD': 'Recomendado.', 'set.stopHint': 'Atajo de emergencia para detener todo:',
+      'set.humor': 'Nivel de humor', 'set.humor0': 'Serio', 'set.humor1': 'Ligero', 'set.humor2': 'Divertido', 'set.humor3': 'Payaso',
+      'set.commentMusic': 'Comentar canciones', 'set.readNotif': 'Decir quién envió el mensaje', 'set.wellbeing': 'Recordatorios de agua y pausa',
+      'set.roam': 'Pasear por la pantalla', 'set.sneeze': 'Estornudos y manías', 'set.dnd': 'No molestar', 'set.speakReplies': 'Leer las respuestas en voz alta',
+      'set.lang': 'Idioma', 'set.startWin': 'Iniciar con Windows', 'set.shortcuts': 'Atajos',
+      'set.sc.chat': 'Abrir/cerrar conversación', 'set.sc.listen': 'Hablar por voz', 'set.sc.stop': 'Detener todo',
+      'set.mem.where': 'Todo se guarda solo en esta computadora, cifrado por Windows.', 'set.mem.notes': 'Libreta (lo que sé de ti)',
+      'set.mem.empty': 'Nada anotado todavía.', 'set.mem.export': 'Exportar memoria', 'set.mem.folder': 'Abrir carpeta', 'set.mem.clear': 'Borrar conversaciones',
+      'set.mem.wipe': 'Borrar TODO (conversaciones, libreta y claves)', 'set.mem.wipeConfirm': '¿Seguro? Esto borra todo y desconecta las IAs. No se puede deshacer.',
+      'set.mem.sent': 'Lo que escribes se envía solo a la IA elegida (Anthropic u OpenAI) para generar la respuesta.',
+      'set.about.text': 'Bitu es un amigo digital de código abierto. Hecho con cariño por Silviano Dalberto Pessi — Ideias Livres Desenvolvimentos.',
+      'onb.welcome': '¡Hola! Soy Bitu.', 'onb.welcomeD': 'Viviré en la esquina de tu pantalla, encima del reloj. ¿Me configuramos? Toma un minuto.',
+      'onb.lang': '¿En qué idioma hablamos?', 'onb.names': '¿Cómo nos llamamos?', 'onb.connect': 'Conéctame a una IA', 'onb.avatar': 'Elige mi cara',
+      'onb.done': '¡Listo!', 'onb.doneD': 'Haz clic en mí para conversar. Arrástrame para moverme. Clic derecho abre el menú. Ctrl+Alt+B abre la conversación desde cualquier lugar.',
+      'onb.next': 'Continuar', 'onb.back': 'Volver', 'onb.skip': 'Después', 'onb.finish': '¡Empezar!'
+    }
+  };
+
+  function raw(lang, key) {
+    const dict = D[lang] || D['pt-BR'];
+    if (key in dict) return dict[key];
+    if (key in D.en) return D.en[key];
+    return D['pt-BR'][key];
+  }
+
+  function fill(s, vars) {
+    return String(s).replace(/\{(\w+)\}/g, (_, k) => (vars && vars[k] != null && vars[k] !== '') ? vars[k] : '');
+  }
+
+  function t(lang, key, vars) {
+    const v = raw(lang, key);
+    if (v == null) return key;
+    return fill(Array.isArray(v) ? v[0] : v, vars).replace(/,\s*!/g, '!').replace(/\s+([!?.,])/g, '$1').trim();
+  }
+
+  function pick(lang, key, vars) {
+    const v = raw(lang, key);
+    if (!Array.isArray(v)) return t(lang, key, vars);
+    const item = v[Math.floor(Math.random() * v.length)];
+    return Array.isArray(item) ? item : fill(item, vars).replace(/,\s*!/g, '!').replace(/\s+([!?.,])/g, '$1').trim();
+  }
+
+  function list(lang, key) { const v = raw(lang, key); return Array.isArray(v) ? v : []; }
+
+  function apply(lang, rootEl) {
+    (rootEl || document).querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(lang, el.dataset.i18n); });
+    (rootEl || document).querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(lang, el.dataset.i18nPh); });
+    (rootEl || document).querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(lang, el.dataset.i18nTitle); });
+  }
+
+  return { t, pick, list, apply, LANGS: [['pt-BR', 'Português'], ['en', 'English'], ['es', 'Español']] };
+});

@@ -1,0 +1,71 @@
+{
+  "name": "bitu",
+  "productName": "Bitu",
+  "version": "1.0.0",
+  "description": "Bitu — seu amigo digital na área de trabalho. Conversa, ouve música com você, ajuda nas tarefas e no código. Funciona com Claude ou ChatGPT.",
+  "main": "src/main/main.js",
+  "author": {
+    "name": "Silviano Dalberto Pessi",
+    "url": "https://github.com/sdalberto"
+  },
+  "homepage": "https://github.com/sdalberto/bitu",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdalberto/bitu.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "check": "node scripts/check.js",
+    "dist": "electron-builder --win --x64",
+    "dist:dir": "electron-builder --win --x64 --dir",
+    "release": "electron-builder --win --x64 --publish always"
+  },
+  "devDependencies": {
+    "electron": "^45.2.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.ideiaslivres.bitu",
+    "productName": "Bitu",
+    "copyright": "© 2026 Silviano Dalberto Pessi — Ideias Livres Desenvolvimentos",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "build/icon.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Bitu-Setup-${version}.exe"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Bitu",
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "sdalberto",
+        "repo": "bitu"
+      }
+    ]
+  }
+}

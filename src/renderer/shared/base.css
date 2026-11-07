@@ -1,0 +1,42 @@
+/* Identidade visual do Bitu: papel, tinta e um laranja quentinho. */
+:root {
+  --paper: #FFFBF3;
+  --paper-2: #F6EEDF;
+  --paper-3: #EDE2CE;
+  --ink: #2B2522;
+  --ink-2: #5E544D;
+  --ink-3: #8F847A;
+  --accent: #FF8A3D;
+  --accent-2: #FFB37A;
+  --mint: #7BD389;
+  --sky: #5BA8FF;
+  --rose: #FF6B81;
+  --sun: #FFC93C;
+  --line: 2.5px;
+  --r: 16px;
+  --shadow: 3px 4px 0 var(--ink);
+  --font: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --mono: "Cascadia Code", "Cascadia Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; font-family: var(--font); color: var(--ink); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+::selection { background: var(--accent-2); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 10px; border: 2px solid var(--paper); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; justify-content: center;
+  padding: 9px 16px; border-radius: 12px; border: var(--line) solid var(--ink); background: var(--paper);
+  box-shadow: 2px 3px 0 var(--ink); font-weight: 650; transition: transform .08s, box-shadow .08s, background .15s;
+}
+.btn:hover { background: #fff; }
+.btn:active { transform: translate(2px, 3px); box-shadow: 0 0 0 var(--ink); }
+.btn.primary { background: var(--accent); }
+.btn.primary:hover { background: #FF9A56; }
+.btn.ghost { box-shadow: none; border-color: transparent; background: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.btn.danger { background: #FFE1E1; }
+.btn:disabled { opacity: .5; pointer-events: none; }

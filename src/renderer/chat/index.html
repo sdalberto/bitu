@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: bitu-asset:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>Bitu</title>
+  <link rel="stylesheet" href="../shared/base.css">
+  <link rel="stylesheet" href="../shared/avatar.css">
+  <link rel="stylesheet" href="chat.css">
+</head>
+<body>
+  <main class="panel">
+    <header class="top">
+      <div class="who">
+        <div id="mini" class="mini"></div>
+        <div>
+          <div id="name" class="name">Bitu</div>
+          <div class="status"><i id="dot" class="dot"></i><span id="status"></span></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btn-clear" class="icon" data-i18n-title="chat.clear" aria-label="limpar">
+          <svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13" /></svg>
+        </button>
+        <button id="btn-settings" class="icon" data-i18n-title="tray.settings" aria-label="config">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>
+        </button>
+        <button id="btn-close" class="icon" aria-label="fechar">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section id="log" class="log" aria-live="polite"></section>
+
+    <div id="chips" class="chips"></div>
+
+    <form id="composer" class="composer">
+      <textarea id="input" rows="1" data-i18n-ph="chat.placeholder"></textarea>
+      <button type="button" id="btn-mic" class="round mic" aria-label="microfone">
+        <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+      </button>
+      <button type="submit" id="btn-send" class="round send" aria-label="enviar">
+        <svg class="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+        <svg class="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
+      </button>
+    </form>
+  </main>
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/avatar.js"></script>
+  <script src="meme.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>

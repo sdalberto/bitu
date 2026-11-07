@@ -1,0 +1,12 @@
+{
+  "name": "Robozinho Azul",
+  "author": "Bitu",
+  "states": {
+    "idle": "idle.svg",
+    "talk": "talk.svg",
+    "walk": "walk.svg",
+    "dance": "dance.svg",
+    "sleep": "sleep.svg",
+    "think": "think.svg"
+  }
+}

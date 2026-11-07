@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: bitu-asset:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>Bitu</title>
+  <link rel="stylesheet" href="../shared/base.css">
+  <link rel="stylesheet" href="../shared/avatar.css">
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="titlebar">
+    <div class="brand"><span class="logo" id="logo"></span><b>Bitu</b> <span class="muted" data-i18n="set.title"></span></div>
+    <div class="win">
+      <button id="w-min" aria-label="minimizar"><svg viewBox="0 0 24 24"><path d="M6 12h12"/></svg></button>
+      <button id="w-close" aria-label="fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </div>
+
+  <div class="layout" id="layout">
+    <nav class="side" id="nav"></nav>
+    <main class="content" id="content"></main>
+  </div>
+
+  <div class="wizard" id="wizard" hidden></div>
+
+  <script src="../shared/i18n.js"></script>
+  <script src="../shared/avatar.js"></script>
+  <script src="../shared/voice.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

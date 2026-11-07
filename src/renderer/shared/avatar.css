@@ -1,0 +1,150 @@
+/* Estados e animações do avatar. O estado vai em data-state, a emoção em data-emo. */
+.bitu-avatar { position: relative; width: 100%; height: 100%; --look-x: 0px; --look-y: 0px; }
+.bitu-avatar .bitu-svg, .bitu-avatar .bitu-img { width: 100%; height: 100%; display: block; overflow: visible; }
+.bitu-avatar .bitu-img { object-fit: contain; transform-origin: 50% 100%; animation: img-breathe 3.4s ease-in-out infinite; }
+
+.bitu-svg .b-all, .bitu-svg .b-body, .bitu-svg .b-face, .bitu-svg .b-eye-in, .bitu-svg .b-foot, .bitu-svg .b-arm { transform-box: fill-box; }
+.bitu-svg .b-all { transform-origin: 50% 100%; }
+.bitu-svg .b-body { transform-origin: 50% 100%; animation: breathe 3.4s ease-in-out infinite; }
+.bitu-svg .b-eye-in { transform-origin: 50% 50%; transform: translate(var(--look-x), var(--look-y)); transition: transform .25s ease; }
+.bitu-svg .b-arm { transform-origin: 50% 0%; }
+.bitu-svg .b-antenna { animation: antenna 2.2s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+.bitu-svg .b-tail { animation: tail 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 100%; }
+
+/* camadas escondidas por padrão */
+.bitu-svg .b-eyes-alt > *, .bitu-svg .b-mouth > *, .bitu-svg .b-brows > *, .bitu-svg .b-tear, .bitu-svg .b-props > * { display: none; }
+.bitu-svg .m-smile { display: inline; }
+
+/* piscar */
+.bitu-avatar.blink .b-eye-in { transform: translate(var(--look-x), var(--look-y)) scaleY(.08); transition: transform .06s; }
+
+/* falando */
+.bitu-avatar.talking .m-smile { display: none; }
+.bitu-avatar.talking.mouth-open .m-open, .bitu-avatar.talking.mouth-open .m-open-tongue { display: inline; }
+.bitu-avatar.talking:not(.mouth-open) .m-flat { display: inline; }
+
+/* andando */
+.bitu-avatar[data-state="walk"] .b-all { animation: hop .38s ease-in-out infinite; }
+.bitu-avatar[data-state="walk"] .b-foot-l { animation: step .38s ease-in-out infinite; }
+.bitu-avatar[data-state="walk"] .b-foot-r { animation: step .38s ease-in-out infinite reverse; }
+.bitu-avatar[data-state="walk"] .bitu-img { animation: hop .38s ease-in-out infinite; }
+
+/* arrastando */
+.bitu-avatar[data-state="drag"] .b-all, .bitu-avatar[data-state="drag"] .bitu-img { animation: dangle .5s ease-in-out infinite alternate; transform-origin: 50% 0%; }
+.bitu-avatar[data-state="drag"] .m-smile { display: none; }
+.bitu-avatar[data-state="drag"] .m-o { display: inline; }
+
+/* pensando */
+.bitu-avatar[data-state="think"] { --look-x: 3px; --look-y: -4px; }
+.bitu-avatar[data-state="think"] .m-smile { display: none; }
+.bitu-avatar[data-state="think"] .m-flat { display: inline; }
+.bitu-avatar[data-state="think"] .b-all { animation: sway 2.4s ease-in-out infinite; }
+
+/* ouvindo */
+.bitu-avatar[data-state="listen"] .b-all { animation: tilt 1.6s ease-in-out infinite alternate; }
+.bitu-avatar[data-state="listen"] .b-eye-in { transform: scale(1.15); }
+
+/* dançando */
+.bitu-avatar[data-state="dance"] .b-all, .bitu-avatar[data-state="dance"] .bitu-img { animation: dance .52s ease-in-out infinite alternate; }
+.bitu-avatar[data-state="dance"] .b-arm-l { animation: wave .26s ease-in-out infinite alternate; }
+.bitu-avatar[data-state="dance"] .b-arm-r { animation: wave .26s ease-in-out infinite alternate-reverse; }
+.bitu-avatar[data-state="dance"] .eyes-happy { display: inline; }
+.bitu-avatar[data-state="dance"] .b-eyes { display: none; }
+
+/* dormindo */
+.bitu-avatar[data-state="sleep"] .b-eyes { display: none; }
+.bitu-avatar[data-state="sleep"] .eyes-closed { display: inline; }
+.bitu-avatar[data-state="sleep"] .m-smile { display: none; }
+.bitu-avatar[data-state="sleep"] .m-o { display: inline; transform: scale(.55); transform-box: fill-box; transform-origin: center; }
+.bitu-avatar[data-state="sleep"] .b-body { animation: breathe 5s ease-in-out infinite; }
+.bitu-avatar[data-state="sleep"] .bitu-img { animation: img-breathe 5s ease-in-out infinite; filter: brightness(.85); }
+
+/* emoções */
+.bitu-avatar[data-emo="feliz"] .eyes-happy, .bitu-avatar[data-emo="rindo"] .eyes-happy, .bitu-avatar[data-emo="comemorando"] .eyes-happy { display: inline; }
+.bitu-avatar[data-emo="feliz"] .b-eyes, .bitu-avatar[data-emo="rindo"] .b-eyes, .bitu-avatar[data-emo="comemorando"] .b-eyes { display: none; }
+.bitu-avatar[data-emo="rindo"] .m-smile, .bitu-avatar[data-emo="comemorando"] .m-smile { display: none; }
+.bitu-avatar[data-emo="rindo"] .m-open, .bitu-avatar[data-emo="rindo"] .m-open-tongue,
+.bitu-avatar[data-emo="comemorando"] .m-open, .bitu-avatar[data-emo="comemorando"] .m-open-tongue { display: inline; }
+.bitu-avatar[data-emo="rindo"] .b-all, .bitu-avatar[data-emo="rindo"] .bitu-img { animation: giggle .14s linear infinite alternate; }
+.bitu-avatar[data-emo="comemorando"] .b-all, .bitu-avatar[data-emo="comemorando"] .bitu-img { animation: jump .5s cubic-bezier(.3,.7,.4,1) infinite; }
+.bitu-avatar[data-emo="comemorando"] .prop-party { display: inline; }
+.bitu-avatar[data-emo="comemorando"] .b-arm { animation: wave .2s ease-in-out infinite alternate; }
+
+.bitu-avatar[data-emo="triste"] .brow-sad, .bitu-avatar[data-emo="triste"] .b-tear { display: inline; }
+.bitu-avatar[data-emo="triste"] .m-smile { display: none; }
+.bitu-avatar[data-emo="triste"] .m-sad { display: inline; }
+.bitu-avatar[data-emo="triste"] { --look-y: 4px; }
+.bitu-avatar[data-emo="triste"] .b-tear { animation: tear 1.6s ease-in infinite; transform-box: fill-box; }
+
+.bitu-avatar[data-emo="surpreso"] .m-smile { display: none; }
+.bitu-avatar[data-emo="surpreso"] .m-o { display: inline; }
+.bitu-avatar[data-emo="surpreso"] .b-eye-in { transform: scale(1.3); }
+.bitu-avatar[data-emo="surpreso"] .b-all, .bitu-avatar[data-emo="surpreso"] .bitu-img { animation: startle .5s ease-out 1; }
+
+.bitu-avatar[data-emo="pensativo"] { --look-x: 3px; --look-y: -4px; }
+.bitu-avatar[data-emo="pensativo"] .m-smile { display: none; }
+.bitu-avatar[data-emo="pensativo"] .m-flat { display: inline; }
+
+.bitu-avatar[data-emo="apaixonado"] .b-eyes { display: none; }
+.bitu-avatar[data-emo="apaixonado"] .eyes-heart { display: inline; animation: pulse .6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+.bitu-avatar[data-emo="apaixonado"] .b-cheek { opacity: .7; }
+
+.bitu-avatar[data-emo="bravo"] .brow-angry { display: inline; }
+.bitu-avatar[data-emo="bravo"] .m-smile { display: none; }
+.bitu-avatar[data-emo="bravo"] .m-flat { display: inline; }
+.bitu-avatar[data-emo="bravo"] .b-all, .bitu-avatar[data-emo="bravo"] .bitu-img { animation: shake .09s linear 8; }
+.bitu-avatar[data-emo="bravo"] .b-shape { filter: saturate(1.6) brightness(.95); }
+
+.bitu-avatar[data-emo="tonto"] .b-eyes { display: none; }
+.bitu-avatar[data-emo="tonto"] .eyes-spiral { display: inline; animation: spin 1s linear infinite; transform-box: fill-box; transform-origin: center; }
+.bitu-avatar[data-emo="tonto"] .m-smile { display: none; }
+.bitu-avatar[data-emo="tonto"] .m-cat { display: inline; }
+.bitu-avatar[data-emo="tonto"] .b-all, .bitu-avatar[data-emo="tonto"] .bitu-img { animation: wobble 1.2s ease-in-out infinite; }
+
+.bitu-avatar[data-emo="cafe"] .prop-coffee { display: inline; }
+.bitu-avatar[data-emo="cafe"] .eyes-closed { display: inline; }
+.bitu-avatar[data-emo="cafe"] .b-eyes { display: none; }
+.bitu-avatar[data-emo="cafe"] .steam { animation: steam 1.6s ease-in-out infinite; }
+
+.bitu-avatar[data-emo="oculos_escuros"] .eyes-shades { display: inline; }
+.bitu-avatar[data-emo="oculos_escuros"] .b-eyes { display: none; }
+.bitu-avatar[data-emo="oculos_escuros"] .m-smile { display: none; }
+.bitu-avatar[data-emo="oculos_escuros"] .m-cat { display: inline; }
+
+.bitu-avatar[data-emo="espirro"] .b-eyes { display: none; }
+.bitu-avatar[data-emo="espirro"] .eyes-closed { display: inline; }
+.bitu-avatar[data-emo="espirro"] .b-all, .bitu-avatar[data-emo="espirro"] .bitu-img { animation: sneeze .9s ease-out 1; }
+
+.bitu-avatar[data-emo="bocejo"] .eyes-closed { display: inline; }
+.bitu-avatar[data-emo="bocejo"] .b-eyes, .bitu-avatar[data-emo="bocejo"] .m-smile { display: none; }
+.bitu-avatar[data-emo="bocejo"] .m-o { display: inline; transform: scale(1.4, 1.6); transform-box: fill-box; transform-origin: center; }
+.bitu-avatar[data-emo="bocejo"] .b-body { animation: stretch 1.6s ease-in-out 1; }
+
+/* modo lendário (código secreto) */
+.bitu-avatar.legend .b-shape { fill: #FFC93C; filter: drop-shadow(0 0 10px #FFE08A); }
+.bitu-avatar.legend .bitu-img { filter: sepia(1) saturate(4) hue-rotate(-10deg) drop-shadow(0 0 10px #FFE08A); }
+
+.bitu-avatar.flip .bitu-svg, .bitu-avatar.flip .bitu-img { transform: scaleX(-1); }
+
+@keyframes breathe { 0%,100% { transform: scale(1,1); } 50% { transform: scale(1.025,.975); } }
+@keyframes img-breathe { 0%,100% { transform: scale(1,1); } 50% { transform: scale(1.02,.98); } }
+@keyframes antenna { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+@keyframes tail { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(10deg); } }
+@keyframes hop { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes step { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes dangle { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+@keyframes sway { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+@keyframes tilt { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+@keyframes dance { 0% { transform: rotate(-9deg) translateY(0); } 50% { transform: rotate(0) translateY(-10px); } 100% { transform: rotate(9deg) translateY(0); } }
+@keyframes wave { from { transform: rotate(-30deg); } to { transform: rotate(40deg); } }
+@keyframes giggle { from { transform: rotate(-3deg) translateY(0); } to { transform: rotate(3deg) translateY(-3px); } }
+@keyframes jump { 0%,100% { transform: translateY(0) scale(1,1); } 15% { transform: translateY(0) scale(1.1,.9); } 50% { transform: translateY(-26px) scale(.95,1.05); } }
+@keyframes tear { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(26px); opacity: 0; } }
+@keyframes startle { 0% { transform: translateY(0); } 30% { transform: translateY(-14px) scale(1.06); } 100% { transform: translateY(0); } }
+@keyframes pulse { from { transform: scale(1); } to { transform: scale(1.18); } }
+@keyframes shake { 0% { transform: translateX(-3px); } 100% { transform: translateX(3px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes wobble { 0%,100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+@keyframes steam { 0% { opacity: 0; transform: translateY(4px); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+@keyframes sneeze { 0% { transform: scale(1); } 40% { transform: scale(1.06,.94) rotate(-4deg); } 55% { transform: scale(.94,1.08) translateY(-10px) rotate(6deg); } 100% { transform: scale(1); } }
+@keyframes stretch { 0%,100% { transform: scale(1,1); } 50% { transform: scale(.94,1.1); } }
