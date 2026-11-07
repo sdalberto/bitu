@@ -32,6 +32,18 @@
     return s;
   }
 
+  // a voz offline precisa combinar com o idioma; se não combinar, usa a primeira baixada daquele idioma
+  const LOCAL_PREFIX = { 'pt-BR': 'pt_', en: 'en_', es: 'es_' };
+  let installedLocal = [];
+  function localVoiceFor(s) {
+    const want = s.voice.localVoice || '';
+    const pre = LOCAL_PREFIX[s.lang] || 'pt_';
+    if (want.startsWith(pre)) return want;
+    return installedLocal.find(id => id.startsWith(pre)) || want;
+  }
+  function setInstalledLocal(list) { installedLocal = Array.isArray(list) ? list : []; }
+  if (root.bitu) root.bitu.invoke('voice:status').then(st => setInstalledLocal(st && st.voices)).catch(() => {});
+
   function clean(text) {
     return String(text)
       .replace(/```[\s\S]*?```/g, ' (mandei o código no chat) ')
@@ -62,12 +74,15 @@
     stop();
     speakingCb = (on) => { if (!on && opts.onEnd) opts.onEnd(); };
 
-    if (v.engine === 'openai') {
+    if (v.engine === 'openai' || v.engine === 'local') {
       try {
-        const b64 = await root.bitu.invoke('tts:openai', t, v.openaiVoice);
+        const local = v.engine === 'local';
+        const b64 = local
+          ? await root.bitu.invoke('tts:local', t, localVoiceFor(s))
+          : await root.bitu.invoke('tts:openai', t, v.openaiVoice);
         if (b64 && b64.error) throw new Error(b64.error);
         audioEl = audioEl || new Audio();
-        audioEl.src = 'data:audio/mpeg;base64,' + b64;
+        audioEl.src = (local ? 'data:audio/wav;base64,' : 'data:audio/mpeg;base64,') + b64;
         audioEl.volume = v.volume;
         audioEl.onplay = () => opts.onStart && opts.onStart();
         audioEl.onended = () => opts.onEnd && opts.onEnd();
@@ -75,7 +90,7 @@
         await audioEl.play();
         return;
       } catch (e) {
-        console.warn('voz OpenAI falhou, usando a do Windows', e);
+        console.warn('voz ' + v.engine + ' falhou, usando a do Windows', e);
       }
     }
 
@@ -93,5 +108,5 @@
     speechSynthesis.speak(u);
   }
 
-  root.BituVoice = { speak, stop, voicesFor, clean };
+  root.BituVoice = { speak, stop, voicesFor, clean, setInstalledLocal };
 })(typeof self !== 'undefined' ? self : this);

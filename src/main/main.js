@@ -9,6 +9,9 @@ const { pathToFileURL } = require('url');
 
 const { Store } = require('./store');
 const providers = require('./providers');
+const local = require('./local');
+const { LocalVoice } = require('./localvoice');
+const { Installer } = require('./installer');
 const { Watchers } = require('./watchers');
 const winactions = require('./winactions');
 const { buildTools } = require('./tools');
@@ -33,7 +36,7 @@ if (!app.requestSingleInstanceLock()) {
 
 app.setAppUserModelId('com.ideiaslivres.bitu');
 
-let store, watchers, agent, tray;
+let store, watchers, agent, tray, localVoice, installer;
 let buddyWin = null, chatWin = null, settingsWin = null;
 let lastShot = null;
 let connectWatch = null;
@@ -283,6 +286,34 @@ async function saveKey(provider, key) {
   }
 }
 
+// ------------------------------------------------------------------ modo local
+async function connectLocal(cfg) {
+  const kind = (cfg && cfg.kind) || 'custom';
+  let baseUrl = String((cfg && cfg.baseUrl) || '').trim().replace(/\/+$/, '');
+  if (!/^https?:\/\//i.test(baseUrl)) baseUrl = 'http://' + baseUrl;
+  if (!/\/v\d+$/.test(baseUrl)) baseUrl += '/v1';
+  const typed = String((cfg && cfg.token) || '').trim();
+  const token = local.tokenFor(kind, typed);
+  broadcast('connect:status', { provider: 'local', state: 'checking' });
+  const r = await local.probe(baseUrl, token, 6000);
+  if (!r.ok) {
+    const message = r.offline ? 'offline' : r.status === 401 ? 'token' : (kind === 'openclaw' && (r.status === 404 || r.status === 405)) ? 'needs-api' : `Erro ${r.status}`;
+    broadcast('connect:status', { provider: 'local', state: 'error', message });
+    return { ok: false, error: message };
+  }
+  store.setKey('local', typed);
+  const current = store.settings.models.local;
+  const wanted = cfg && cfg.model ? r.models.find(m => m.id === cfg.model || m.id === cfg.model + ':latest') : null;
+  const keepModel = store.settings.local.baseUrl === baseUrl && r.models.some(m => m.id === current);
+  updateSettings({
+    provider: 'local',
+    local: { kind, baseUrl, connected: true, vision: cfg && cfg.vision != null ? Boolean(cfg.vision) : kind === 'openclaw' },
+    models: { local: wanted ? wanted.id : keepModel ? current : local.pickModel(kind, r.models) }
+  });
+  broadcast('connect:status', { provider: 'local', state: 'ok' });
+  return { ok: true, models: r.models };
+}
+
 // ------------------------------------------------------------------ IPC
 function handle(channel, fn) {
   ipcMain.handle(channel, async (event, ...args) => {
@@ -298,15 +329,40 @@ function setupIpc() {
     encrypted: store.encryptionAvailable, notifMode: watchers.notifMode
   }));
 
-  handle('keys:status', () => ({ anthropic: store.hasKey('anthropic'), openai: store.hasKey('openai') }));
+  handle('keys:status', () => ({ anthropic: store.hasKey('anthropic'), openai: store.hasKey('openai'), local: Boolean(store.settings.local.connected) }));
   handle('keys:set', (_e, provider, key) => saveKey(provider, String(key || '')));
   handle('keys:clear', (_e, provider) => { store.setKey(provider, ''); broadcast('connect:status', { provider, state: 'cleared' }); return true; });
   handle('connect:start', (_e, provider) => { startConnect(provider); return true; });
   handle('connect:cancel', () => { stopConnect(); return true; });
   handle('models:list', async (_e, provider) => {
+    if (provider === 'local') {
+      const L = store.settings.local;
+      if (!L.baseUrl) return [];
+      const r = await local.probe(L.baseUrl, local.tokenFor(L.kind, store.getKey('local')), 5000);
+      return r.ok ? r.models : [];
+    }
     const key = store.getKey(provider);
     if (!key) return [];
     return providers.listModels(provider, key);
+  });
+
+  // ---- modo local (OpenClaw / Ollama / LM Studio)
+  handle('local:detect', () => local.detect());
+  handle('local:connect', (_e, cfg) => connectLocal(cfg));
+  handle('local:disconnect', () => {
+    store.setKey('local', '');
+    const patch = { local: { connected: false } };
+    if (store.settings.provider === 'local') {
+      patch.provider = store.hasKey('anthropic') ? 'anthropic' : store.hasKey('openai') ? 'openai' : 'local';
+    }
+    updateSettings(patch);
+    broadcast('connect:status', { provider: 'local', state: 'cleared' });
+    return true;
+  });
+  handle('local:enable-openclaw', async () => {
+    const out = await winactions.runCommand(local.OPENCLAW_ENABLE_CMD, 60000);
+    await new Promise(r => setTimeout(r, 4000));
+    return { output: out, detected: await local.detect() };
   });
 
   handle('chat:send', (_e, text) => { agent.send(String(text).slice(0, 20000)); return true; });
@@ -341,7 +397,47 @@ function setupIpc() {
       'Fale de forma calorosa, natural e expressiva, como um amigo próximo.');
     return buf.toString('base64');
   });
-  handle('stt:available', () => store.hasKey('openai'));
+  handle('stt:available', () => {
+    const st = localVoice.status();
+    return { openai: store.hasKey('openai'), local: st.stt && st.sttModels.length > 0 };
+  });
+  handle('stt:local', async (_e, bytes) => localVoice.transcribe(Buffer.from(bytes), store.settings.lang, store.settings.voice.sttModel));
+  handle('tts:local', async (_e, text, voiceId) => {
+    const buf = await localVoice.speak(text, voiceId || store.settings.voice.localVoice, store.settings.voice.rate);
+    return buf.toString('base64');
+  });
+  handle('voice:status', () => localVoice.status());
+  handle('voice:install', async (_e, want) => {
+    const progress = (p) => broadcast('setup:progress', { task: 'voice', ...p });
+    try {
+      const st = await localVoice.install(want || {}, progress);
+      const patch = { voice: {} };
+      if (want && want.voice) patch.voice.localVoice = want.voice;
+      if (want && want.sttModel) patch.voice.sttModel = want.sttModel;
+      if (want && want.tts !== false) patch.voice.engine = 'local';
+      updateSettings(patch);
+      progress({ step: 'done', done: true });
+      return { ok: true, status: st };
+    } catch (e) {
+      progress({ step: 'error', error: e.message, done: true });
+      return { ok: false, error: e.message };
+    }
+  });
+  handle('voice:uninstall', () => {
+    const st = localVoice.uninstall();
+    if (store.settings.voice.engine === 'local') updateSettings({ voice: { engine: 'system' } });
+    return st;
+  });
+
+  // ---- instalar IA local sozinho
+  handle('ai:info', () => installer.info());
+  handle('ai:install', async (_e, opts) => {
+    try { return await installer.run(opts || {}); } catch (e) {
+      broadcast('setup:progress', { task: 'ai', step: 'error', error: e.message, done: true });
+      return { ok: false, error: e.message };
+    }
+  });
+  handle('ai:cancel', () => { installer.cancel(); return true; });
   handle('stt:transcribe', async (_e, bytes, mime) => {
     const key = store.getKey('openai');
     if (!key) throw new Error('nokey');
@@ -492,6 +588,12 @@ app.whenReady().then(async () => {
   });
   session.defaultSession.setPermissionCheckHandler((wc, permission) => {
     return ['media', 'clipboard-sanitized-write'].includes(permission) && Boolean(wc) && wc.getURL().startsWith('file://');
+  });
+
+  localVoice = new LocalVoice(app.getPath('userData'));
+  installer = new Installer({
+    onProgress: (p) => broadcast('setup:progress', { task: 'ai', ...p }),
+    connect: (cfg) => connectLocal(cfg)
   });
 
   watchers = new Watchers(() => store.settings);

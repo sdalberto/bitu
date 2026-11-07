@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="330" height="84" viewBox="0 0 330 84" role="img" aria-label="Usar 100% offline">
+  <rect x="6" y="8" width="322" height="74" rx="20" fill="#2B2522"/>
+  <rect x="2" y="2" width="322" height="74" rx="20" fill="#7BD389" stroke="#2B2522" stroke-width="3"/>
+  <g transform="translate(22 19)" fill="none" stroke="#2B2522" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="4" width="30" height="21" rx="3"/><path d="M12 32 h12 M18 25 v7"/><path d="M11 14 l5 5 l9 -9"/></g>
+  <text x="74" y="36" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#2B2522">Usar 100% offline</text>
+  <text x="74" y="58" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#5E544D">sem Claude e sem ChatGPT</text>
+</svg>

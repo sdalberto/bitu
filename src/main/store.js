@@ -17,7 +17,13 @@ const DEFAULTS = {
   userName: '',
   assistantName: 'Bitu',
   provider: 'anthropic',
-  models: { anthropic: '', openai: '' },
+  models: { anthropic: '', openai: '', local: '' },
+  local: {
+    kind: 'openclaw', // openclaw | ollama | lmstudio | custom
+    baseUrl: '',
+    vision: false,
+    connected: false
+  },
   avatar: {
     kind: 'builtin', // builtin | image | pack
     shape: 'gota',
@@ -34,6 +40,9 @@ const DEFAULTS = {
     engine: 'system', // system | openai
     systemVoice: '',
     openaiVoice: 'coral',
+    localVoice: 'pt_BR-faber-medium',
+    sttModel: 'base',
+    sttEngine: 'auto', // auto | local | openai
     rate: 1.05,
     pitch: 1.1,
     volume: 0.9,

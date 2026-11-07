@@ -1,0 +1,53 @@
+name: Gerar instalador do Windows
+
+# Roda quando você publica um Release pelo site do GitHub,
+# quando envia uma tag de versão (ex.: v1.2.0) pelo git,
+# ou manualmente na aba Actions.
+on:
+  release:
+    types: [published]
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.event.release.tag_name || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      TAG: ${{ github.event.release.tag_name || github.ref_name }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Checar o código
+        run: npm run check
+
+      - name: Gerar instalador
+        run: npm run dist
+
+      - name: Publicar no Release
+        if: startsWith(env.TAG, 'v')
+        shell: bash
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Bitu $TAG" --generate-notes
+          gh release upload "$TAG" dist/*.exe --clobber
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Bitu-Setup
+          path: dist/*.exe

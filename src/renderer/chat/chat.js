@@ -21,7 +21,8 @@
     const keys = await bitu.invoke('keys:status');
     const on = keys[S.provider];
     $('dot').classList.toggle('on', on);
-    const prov = S.provider === 'anthropic' ? 'Claude' : 'ChatGPT';
+    const LOCALN = { openclaw: 'OpenClaw', ollama: 'Ollama', lmstudio: 'LM Studio', custom: 'Local' };
+    const prov = S.provider === 'anthropic' ? 'Claude' : S.provider === 'openai' ? 'ChatGPT' : (LOCALN[(S.local || {}).kind] || 'Local');
     $('status').textContent = `${prov} · ${on ? t('chat.connected') : t('chat.disconnected')}`;
     renderChips();
   }
@@ -150,6 +151,10 @@
     if (/\bsextou\b|\bes viernes\b|\bfriday\b/i.test(text)) {
       bitu.send('buddy:relay', { type: 'emote', emotion: 'comemorando' });
     }
+    if (/\bgo+l+\b|\bgolaço\b|\bgoal+\b|\bé campeão\b/i.test(text)) {
+      bitu.send('buddy:relay', { type: 'emote', emotion: 'comemorando' });
+      bitu.send('buddy:relay', { type: 'fx', kind: 'confetti' });
+    }
     add('me', md(text));
     input.value = ''; autosize();
     setBusy(true);
@@ -176,11 +181,36 @@
   }
 
   // ------------------------------------------------------------ voz (microfone)
+  /** webm/opus -> WAV 16 kHz mono (formato que o whisper offline entende) */
+  async function toWav16k(blob) {
+    const ctx = new AudioContext();
+    const decoded = await ctx.decodeAudioData(await blob.arrayBuffer());
+    ctx.close();
+    const rate = 16000;
+    const off = new OfflineAudioContext(1, Math.ceil(decoded.duration * rate), rate);
+    const src = off.createBufferSource();
+    src.buffer = decoded;
+    src.connect(off.destination);
+    src.start();
+    const pcm = (await off.startRendering()).getChannelData(0);
+    const buf = new ArrayBuffer(44 + pcm.length * 2);
+    const v = new DataView(buf);
+    const str = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    str(0, 'RIFF'); v.setUint32(4, 36 + pcm.length * 2, true); str(8, 'WAVE'); str(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, rate, true);
+    v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, pcm.length * 2, true);
+    for (let i = 0; i < pcm.length; i++) { const x = Math.max(-1, Math.min(1, pcm[i])); v.setInt16(44 + i * 2, x < 0 ? x * 0x8000 : x * 0x7FFF, true); }
+    return new Uint8Array(buf);
+  }
+
   let rec = null, chunks = [];
   async function toggleMic() {
     if (rec && rec.state === 'recording') { rec.stop(); return; }
-    const ok = await bitu.invoke('stt:available');
-    if (!ok) { add('sys', esc(t('chat.noMic'))); return; }
+    const av = await bitu.invoke('stt:available');
+    const pref = S.voice.sttEngine || 'auto';
+    const useLocal = av && av.local && (pref !== 'openai' || !av.openai);
+    const useOpenAI = av && av.openai && !useLocal;
+    if (!useLocal && !useOpenAI) { add('sys', esc(t('chat.noMic'))); return; }
     let stream;
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch { add('err', esc(t('chat.micDenied'))); return; }
     chunks = [];
@@ -192,10 +222,15 @@
       input.placeholder = t('chat.transcribing');
       bitu.send('buddy:relay', { type: 'emote', emotion: 'pensativo' });
       const blob = new Blob(chunks, { type: 'audio/webm' });
-      const bytes = new Uint8Array(await blob.arrayBuffer());
-      const text = await bitu.invoke('stt:transcribe', bytes, 'audio/webm');
+      let text = '';
+      try {
+        text = useLocal
+          ? await bitu.invoke('stt:local', await toWav16k(blob))
+          : await bitu.invoke('stt:transcribe', new Uint8Array(await blob.arrayBuffer()), 'audio/webm');
+      } catch (e) { text = { error: e.message }; }
       input.placeholder = t('chat.placeholder');
-      if (text && !text.error && String(text).trim()) send(text);
+      if (text && text.error) add('err', esc(text.error));
+      else if (text && String(text).trim()) send(text);
     };
     rec.start();
     micBtn.classList.add('rec');
@@ -209,7 +244,8 @@
   async function showMeme(spec) {
     const dataUrl = await M.make(spec, S.avatar);
     const file = await bitu.invoke('meme:save', dataUrl);
-    const el = add('bot', `<img class="meme" alt="meme"><div class="meta">${esc(t('chat.memeSaved'))} ${esc(file)} · <a data-open>${esc(t('chat.openFolder'))}</a></div>`);
+    const folder = String(file).split(/[\\/]/).slice(-3, -1).join(' › ');
+    const el = add('bot', `<img class="meme" alt="meme"><div class="meta">${esc(t('chat.memeSaved'))} ${esc(folder)} · <a data-open>${esc(t('chat.openFolder'))}</a></div>`);
     el.querySelector('img').src = dataUrl;
     el.querySelector('[data-open]').onclick = () => bitu.invoke('open:path', file);
     bitu.send('chat:meme-ready', file);

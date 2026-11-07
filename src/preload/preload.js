@@ -8,6 +8,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 const INVOKE = new Set([
   'settings:get', 'settings:set', 'app:info',
   'keys:status', 'keys:set', 'keys:clear', 'connect:start', 'connect:cancel', 'models:list',
+  'local:detect', 'local:connect', 'local:disconnect', 'local:enable-openclaw',
+  'stt:local', 'tts:local', 'voice:status', 'voice:install', 'voice:uninstall', 'ai:info', 'ai:install', 'ai:cancel',
   'chat:send', 'chat:stop', 'chat:history', 'chat:clear', 'confirm:reply',
   'notes:list', 'notes:remove', 'memory:export', 'memory:wipe', 'memory:open-folder',
   'tts:openai', 'stt:available', 'stt:transcribe',
@@ -17,7 +19,7 @@ const INVOKE = new Set([
 const SEND = new Set(['buddy:interactive', 'buddy:moveTo', 'buddy:savePos', 'buddy:click', 'buddy:menu', 'buddy:speak-from-chat', 'buddy:relay', 'chat:meme-ready']);
 const ON = new Set([
   'settings:changed', 'settings:tab', 'agent:event', 'confirm:ask', 'world:event', 'buddy:cmd',
-  'connect:status', 'chat:listen', 'chat:meme'
+  'connect:status', 'chat:listen', 'chat:meme', 'setup:progress'
 ]);
 
 contextBridge.exposeInMainWorld('bitu', {

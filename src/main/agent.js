@@ -3,6 +3,7 @@
  * O "cérebro": monta a personalidade, chama a IA e executa as ferramentas com segurança.
  */
 const { Turn } = require('./providers');
+const local = require('./local');
 
 const LANG_NAME = { 'pt-BR': 'português do Brasil', en: 'English', es: 'español' };
 const HUMOR = [
@@ -70,12 +71,13 @@ class Agent {
     if (this.busy) { this.stop(); await new Promise(r => setTimeout(r, 200)); }
     const settings = this.store.getSettings();
     const provider = settings.provider;
-    const key = this.store.getKey(provider);
+    const isLocal = provider === 'local';
+    const key = isLocal ? local.tokenFor(settings.local.kind, this.store.getKey('local')) : this.store.getKey(provider);
     this.store.addMessage('user', text);
-    if (!key) {
-      const msg = settings.lang === 'en' ? "I'm not connected yet! Open Settings > Connection and click Connect." :
+    if (isLocal ? !(settings.local.connected && settings.local.baseUrl) : !key) {
+      const msg = settings.lang === 'en' ? "I'm not connected yet! Open Settings > Connection and pick Claude, ChatGPT or a local AI (OpenClaw/Ollama)." :
         settings.lang === 'es' ? '¡Todavía no estoy conectado! Abre Configuración > Conexión y haz clic en Conectar.' :
-          'Ainda não tô conectado! Abre Configurações > Conexão e clica em Conectar.';
+          'Ainda não tô conectado! Abre Configurações > Conexão e escolhe o Claude, o ChatGPT ou uma IA aqui do PC (OpenClaw/Ollama).';
       this.store.addMessage('assistant', msg);
       this.emit({ type: 'reply', text: msg, final: true });
       this.emit({ type: 'need-connect' });
@@ -96,6 +98,8 @@ class Agent {
       provider,
       key,
       model: settings.models[provider],
+      baseUrl: isLocal ? settings.local.baseUrl : undefined,
+      vision: isLocal ? Boolean(settings.local.vision) : true,
       system: systemPrompt({ settings, notes: this.store.memory.notes, media: this.watchers.currentMedia(), activeWin }),
       history: this.store.recentHistory(30),
       tools,

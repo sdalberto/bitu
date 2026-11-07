@@ -16,29 +16,31 @@
   const SHAPES = {
     gota: {
       body: (c) => `<path class="b-shape" d="M100 30 C 120 58 166 84 166 124 C166 157 137 178 100 178 C63 178 34 157 34 124 C34 84 80 58 100 30Z" fill="${c}"/>`,
-      feet: true, face: 0
+      feet: true, face: 0,
+      clip: '<path d="M100 30 C 120 58 166 84 166 124 C166 157 137 178 100 178 C63 178 34 157 34 124 C34 84 80 58 100 30Z"/>'
     },
     bolinha: {
       body: (c) => `<circle class="b-shape" cx="100" cy="114" r="66" fill="${c}"/>`,
-      feet: true, face: -4
+      feet: true, face: -4, clip: '<circle cx="100" cy="114" r="66"/>'
     },
     robo: {
       body: (c, d) => `<line x1="100" y1="50" x2="100" y2="26" stroke="${d}" stroke-width="5" stroke-linecap="round"/>
         <circle class="b-antenna" cx="100" cy="22" r="8" fill="${shade(c, 0.35)}"/>
         <rect class="b-shape" x="36" y="50" width="128" height="124" rx="30" fill="${c}"/>
         <rect x="28" y="96" width="12" height="30" rx="6" fill="${d}"/><rect x="160" y="96" width="12" height="30" rx="6" fill="${d}"/>`,
-      feet: true, face: 0
+      feet: true, face: 0, clip: '<rect x="36" y="50" width="128" height="124" rx="30"/>'
     },
     fantasminha: {
       body: (c) => `<path class="b-shape" d="M38 112 C38 66 66 40 100 40 C134 40 162 66 162 112 L162 170 Q151 158 140 170 Q130 182 120 170 Q110 158 100 170 Q90 182 80 170 Q70 158 60 170 Q49 182 38 170Z" fill="${c}"/>`,
-      feet: false, face: 0
+      feet: false, face: 0,
+      clip: '<path d="M38 112 C38 66 66 40 100 40 C134 40 162 66 162 112 L162 170 Q151 158 140 170 Q130 182 120 170 Q110 158 100 170 Q90 182 80 170 Q70 158 60 170 Q49 182 38 170Z"/>'
     },
     gatinho: {
       body: (c, d) => `<path d="M46 80 L52 30 L86 58Z" fill="${c}"/><path d="M154 80 L148 30 L114 58Z" fill="${c}"/>
         <path d="M56 70 L58 44 L76 60Z" fill="${shade(c, 0.35)}"/><path d="M144 70 L142 44 L124 60Z" fill="${shade(c, 0.35)}"/>
         <ellipse class="b-shape" cx="100" cy="118" rx="68" ry="60" fill="${c}"/>
         <path class="b-tail" d="M160 150 C186 146 190 120 176 108" stroke="${c}" stroke-width="12" fill="none" stroke-linecap="round"/>`,
-      feet: true, face: 4, whiskers: true
+      feet: true, face: 4, whiskers: true, clip: '<ellipse cx="100" cy="118" rx="68" ry="60"/>'
     }
   };
 
@@ -62,6 +64,41 @@
     flor: () => `<g transform="translate(140 64)"><circle r="6" cx="0" cy="-9" fill="#FF8FB1"/><circle r="6" cx="9" cy="0" fill="#FF8FB1"/><circle r="6" cx="0" cy="9" fill="#FF8FB1"/><circle r="6" cx="-9" cy="0" fill="#FF8FB1"/><circle r="5" fill="#FFD166"/></g>`
   };
 
+  // ---- camisa de time (modelos genéricos: cores, padrão e número; sem escudos nem marcas)
+  const SHIRT_STYLES = ['lisa', 'listras', 'horizontal', 'faixa', 'metade', 'xadrez', 'gola'];
+  let uid = 0;
+
+  function shirtSvg(sh, shape) {
+    const id = 'bs' + (++uid) + Math.random().toString(36).slice(2, 6);
+    const c1 = sh.c1 || '#D62828', c2 = sh.c2 || '#111111', c3 = sh.c3 || '#FFFFFF';
+    const top = 144;
+    const body = `M0 ${top - 10} L72 ${top - 10} Q100 ${top + 6} 128 ${top - 10} L200 ${top - 10} L200 200 L0 200Z`;
+    let defs = '', fill = c1, extra = '';
+    switch (sh.style) {
+      case 'listras': defs = `<pattern id="${id}p" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${c1}"/><rect width="12" height="24" fill="${c2}"/></pattern>`; fill = `url(#${id}p)`; break;
+      case 'horizontal': defs = `<pattern id="${id}p" width="20" height="16" y="${top - 2}" patternUnits="userSpaceOnUse"><rect width="20" height="16" fill="${c1}"/><rect width="20" height="8" fill="${c2}"/></pattern>`; fill = `url(#${id}p)`; break;
+      case 'xadrez': defs = `<pattern id="${id}p" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${c1}"/><rect width="12" height="12" fill="${c2}"/><rect x="12" y="12" width="12" height="12" fill="${c2}"/></pattern>`; fill = `url(#${id}p)`; break;
+      case 'faixa': extra = `<path d="M30 ${top - 12} L66 ${top - 12} L176 204 L140 204Z" fill="${c2}"/>`; break;
+      case 'metade': extra = `<rect x="100" y="${top - 12}" width="100" height="80" fill="${c2}"/>`; break;
+      case 'gola': extra = `<path d="M0 ${top - 10} L72 ${top - 10} Q100 ${top + 6} 128 ${top - 10} L200 ${top - 10} L200 ${top - 3} L128 ${top - 3} Q100 ${top + 13} 72 ${top - 3} L0 ${top - 3}Z" fill="${c2}"/>`; break;
+    }
+    const digits = String(sh.number == null ? '' : sh.number).replace(/[^0-9]/g, '').slice(0, 2);
+    const num = digits && sh.showNumber !== false
+      ? `<text x="${sh.style === 'faixa' ? 80 : 100}" y="${top + 27}" text-anchor="middle" font-family="Arial Black, Impact, Segoe UI, sans-serif" font-weight="900" font-size="18" fill="${c3}" stroke="${c3.toLowerCase() === c2.toLowerCase() ? c1 : c2}" stroke-width="1.4" paint-order="stroke">${digits}</text>` : '';
+    return `<defs><clipPath id="${id}c">${shape.clip}</clipPath><clipPath id="${id}s"><path d="${body}"/></clipPath>${defs}</defs>
+      <g class="b-shirt" clip-path="url(#${id}c)">
+        <path d="${body}" fill="${fill}"/>
+        ${extra ? `<g clip-path="url(#${id}s)">${extra}</g>` : ''}
+        <path d="M72 ${top - 10} Q100 ${top + 6} 128 ${top - 10}" fill="none" stroke="${c3}" stroke-width="4.5" stroke-linecap="round"/>
+        ${num}
+      </g>`;
+  }
+
+  function sleeve(side, sh) {
+    const cx = side === 'l' ? 36 : 164;
+    return `<path d="M${cx - 10} 134 A10 15 0 0 1 ${cx + 10} 134 Z" fill="${sh.c1 || '#D62828'}"/><path d="M${cx - 10} 134 L${cx + 10} 134" stroke="${sh.c3 || '#fff'}" stroke-width="2.5"/>`;
+  }
+
   function svg(cfg) {
     const c = cfg.color || '#FF8A3D';
     const d = shade(c, -0.22);
@@ -70,6 +107,7 @@
     const eye = EYES[cfg.eyes] || EYES.normal;
     const acc = ACCESSORIES[cfg.accessory] || ACCESSORIES.none;
     const fy = 102 + (shape.face || 0);
+    const shirt = cfg.shirt && cfg.shirt.on ? cfg.shirt : null;
 
     return `<svg class="bitu-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <ellipse class="b-shadow" cx="100" cy="186" rx="52" ry="7" fill="#000" opacity=".18"/>
@@ -78,7 +116,8 @@
     <g class="b-body">
       ${shape.body(c, d)}
       <ellipse cx="74" cy="78" rx="18" ry="10" fill="#fff" opacity=".22" transform="rotate(-24 74 78)"/>
-      ${shape.feet !== false ? `<ellipse class="b-arm b-arm-l" cx="36" cy="132" rx="10" ry="15" fill="${d}"/><ellipse class="b-arm b-arm-r" cx="164" cy="132" rx="10" ry="15" fill="${d}"/>` : ''}
+      ${shirt ? shirtSvg(shirt, shape) : ''}
+      ${shape.feet !== false ? `<g class="b-arm b-arm-l"><ellipse cx="36" cy="132" rx="10" ry="15" fill="${d}"/>${shirt ? sleeve('l', shirt) : ''}</g><g class="b-arm b-arm-r"><ellipse cx="164" cy="132" rx="10" ry="15" fill="${d}"/>${shirt ? sleeve('r', shirt) : ''}</g>` : ''}
       <g class="b-face" transform="translate(0 ${fy - 102})">
         ${cfg.cheeks !== false ? `<ellipse class="b-cheek" cx="62" cy="122" rx="11" ry="7" fill="#FF6B81" opacity=".35"/><ellipse class="b-cheek" cx="138" cy="122" rx="11" ry="7" fill="#FF6B81" opacity=".35"/>` : ''}
         ${shape.whiskers ? `<g stroke="${ink}" stroke-width="2" stroke-linecap="round" opacity=".5"><path d="M44 116 h-16 M46 124 l-15 4"/><path d="M156 116 h16 M154 124 l15 4"/></g>` : ''}
@@ -125,10 +164,22 @@
     colors: ['#FF8A3D', '#FFC93C', '#7BD389', '#2EC4B6', '#5BA8FF', '#8E7CFF', '#FF7EB6', '#F25F5C', '#B8B8C6', '#3D3A4B']
   };
 
+  // combinações de cores prontas (só cores; o usuário dá o nome que quiser)
+  const SHIRT_PRESETS = [
+    { id: 'rubronegro', style: 'listras', c1: '#C8102E', c2: '#111111', c3: '#FFFFFF' },
+    { id: 'alvinegro', style: 'listras', c1: '#FFFFFF', c2: '#111111', c3: '#111111' },
+    { id: 'alviverde', style: 'lisa', c1: '#0B6B3A', c2: '#FFFFFF', c3: '#FFFFFF' },
+    { id: 'tricolor', style: 'faixa', c1: '#FFFFFF', c2: '#C8102E', c3: '#111111' },
+    { id: 'celeste', style: 'listras', c1: '#7EC8F0', c2: '#FFFFFF', c3: '#1B2A4A' },
+    { id: 'canarinho', style: 'lisa', c1: '#FFD100', c2: '#009C3B', c3: '#009C3B' },
+    { id: 'azulbranco', style: 'horizontal', c1: '#1B4DB1', c2: '#FFFFFF', c3: '#FFFFFF' },
+    { id: 'grena', style: 'gola', c1: '#7A1F2B', c2: '#FFFFFF', c3: '#FFFFFF' }
+  ];
+
   const LABELS = {
-    'pt-BR': { gota: 'Gotinha', bolinha: 'Bolinha', robo: 'Robozinho', fantasminha: 'Fantasminha', gatinho: 'Gatinho', normal: 'Normal', brilhante: 'Brilhantes', pontinho: 'Pontinho', sonolento: 'Sonolento', none: 'Nenhum', fone: 'Fone', bone: 'Boné', oculos: 'Óculos', gravata: 'Gravatinha', cachecol: 'Cachecol', coroa: 'Coroa', flor: 'Florzinha' },
-    en: { gota: 'Droplet', bolinha: 'Ball', robo: 'Robot', fantasminha: 'Ghost', gatinho: 'Kitty', normal: 'Normal', brilhante: 'Sparkly', pontinho: 'Dots', sonolento: 'Sleepy', none: 'None', fone: 'Headphones', bone: 'Cap', oculos: 'Glasses', gravata: 'Bow tie', cachecol: 'Scarf', coroa: 'Crown', flor: 'Flower' },
-    es: { gota: 'Gotita', bolinha: 'Bolita', robo: 'Robotito', fantasminha: 'Fantasmita', gatinho: 'Gatito', normal: 'Normal', brilhante: 'Brillantes', pontinho: 'Puntitos', sonolento: 'Dormilón', none: 'Ninguno', fone: 'Audífonos', bone: 'Gorra', oculos: 'Lentes', gravata: 'Moñito', cachecol: 'Bufanda', coroa: 'Corona', flor: 'Florcita' }
+    'pt-BR': { lisa: 'Lisa', listras: 'Listrada', horizontal: 'Listras deitadas', faixa: 'Faixa diagonal', metade: 'Meio a meio', xadrez: 'Xadrez', gola: 'Gola e punho', rubronegro: 'Rubro-negro', alvinegro: 'Alvinegro', alviverde: 'Alviverde', tricolor: 'Tricolor', celeste: 'Celeste', canarinho: 'Canarinho', azulbranco: 'Azul e branco', grena: 'Grená', gota: 'Gotinha', bolinha: 'Bolinha', robo: 'Robozinho', fantasminha: 'Fantasminha', gatinho: 'Gatinho', normal: 'Normal', brilhante: 'Brilhantes', pontinho: 'Pontinho', sonolento: 'Sonolento', none: 'Nenhum', fone: 'Fone', bone: 'Boné', oculos: 'Óculos', gravata: 'Gravatinha', cachecol: 'Cachecol', coroa: 'Coroa', flor: 'Florzinha' },
+    en: { lisa: 'Plain', listras: 'Stripes', horizontal: 'Hoops', faixa: 'Sash', metade: 'Halves', xadrez: 'Checkered', gola: 'Collar & cuffs', rubronegro: 'Red & black', alvinegro: 'Black & white', alviverde: 'Green & white', tricolor: 'Tricolor', celeste: 'Sky blue', canarinho: 'Canary', azulbranco: 'Blue & white', grena: 'Maroon', gota: 'Droplet', bolinha: 'Ball', robo: 'Robot', fantasminha: 'Ghost', gatinho: 'Kitty', normal: 'Normal', brilhante: 'Sparkly', pontinho: 'Dots', sonolento: 'Sleepy', none: 'None', fone: 'Headphones', bone: 'Cap', oculos: 'Glasses', gravata: 'Bow tie', cachecol: 'Scarf', coroa: 'Crown', flor: 'Flower' },
+    es: { lisa: 'Lisa', listras: 'Rayada', horizontal: 'Bandas', faixa: 'Banda diagonal', metade: 'Mitad y mitad', xadrez: 'Ajedrezada', gola: 'Cuello y puños', rubronegro: 'Rojinegro', alvinegro: 'Blanquinegro', alviverde: 'Verdiblanco', tricolor: 'Tricolor', celeste: 'Celeste', canarinho: 'Canarinha', azulbranco: 'Azul y blanco', grena: 'Granate', gota: 'Gotita', bolinha: 'Bolita', robo: 'Robotito', fantasminha: 'Fantasmita', gatinho: 'Gatito', normal: 'Normal', brilhante: 'Brillantes', pontinho: 'Puntitos', sonolento: 'Dormilón', none: 'Ninguno', fone: 'Audífonos', bone: 'Gorra', oculos: 'Lentes', gravata: 'Moñito', cachecol: 'Bufanda', coroa: 'Corona', flor: 'Florcita' }
   };
 
   function label(lang, key) { return (LABELS[lang] || LABELS['pt-BR'])[key] || key; }
@@ -160,5 +211,5 @@
     return () => {};
   }
 
-  root.BituAvatar = { svg, mount, OPTIONS, label, shade };
+  root.BituAvatar = { svg, mount, OPTIONS, label, shade, SHIRT_STYLES, SHIRT_PRESETS };
 })(typeof self !== 'undefined' ? self : this);

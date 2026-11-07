@@ -64,6 +64,17 @@ label.field { display: block; font-weight: 650; font-size: 13.5px; margin: 0 0 6
 .prov .manual input { font-family: var(--mono); font-size: 12.5px; }
 .prov .msg { font-size: 13px; }
 .prov .msg.err { color: #C0392B; }
+.prov.wide, .howto.wide { grid-column: 1 / -1; }
+.howto.wide { margin-top: 0; }
+.prov code { font-family: var(--mono); font-size: 12px; background: var(--paper-2); padding: 1px 6px; border-radius: 6px; }
+.found { display: flex; flex-direction: column; gap: 8px; }
+.found-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 2px solid var(--paper-3); border-radius: 12px; background: var(--paper); }
+.found-row > b { min-width: 86px; }
+.found-row .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.found-row.off { opacity: .55; }
+.found-row .muted { flex: 1; font-size: 13px; }
+.found-row code.cmd { display: block; white-space: pre-wrap; word-break: break-all; }
+.found-row pre.out { margin: 0; max-height: 120px; overflow: auto; font-family: var(--mono); font-size: 11.5px; background: #221D1A; color: #F4EDE4; padding: 8px 10px; border-radius: 8px; white-space: pre-wrap; }
 .howto { margin-top: 16px; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; background: var(--paper-2); border-radius: 14px; padding: 12px 14px; border: 2px dashed var(--paper-3); }
 
 /* avatar */
@@ -114,3 +125,35 @@ input[type=color] { width: 40px; height: 34px; border: 2px solid var(--ink); bor
 .langs button.on { background: var(--accent); box-shadow: 2px 3px 0 var(--ink); }
 
 @media (max-width: 860px) { .providers, .grid2, .av-wrap { grid-template-columns: 1fr; } .preview { position: static; } }
+
+/* voz offline e instalador de IA local */
+.offline .off-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.offline .off-head .pill, .prov .pill { flex: none; }
+.pill { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 99px; border: 2px solid var(--ink); background: var(--paper-2); }
+.pill.ok { background: var(--mint); }
+.progress { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.bar { position: relative; flex: 1; height: 12px; border-radius: 99px; border: 2px solid var(--ink); background: var(--paper-2); overflow: hidden; }
+.bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--accent); transition: width .25s ease; }
+.bar i.indet { width: 100% !important; background: repeating-linear-gradient(-45deg, var(--accent) 0 10px, var(--accent-2) 10px 20px); background-size: 28px 28px; animation: indet 1s linear infinite; }
+@keyframes indet { to { background-position: 28px 0; } }
+.progress .muted { min-width: 150px; font-size: 12.5px; }
+.ai-install { border-top: 2px dashed var(--paper-3); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.ai-cta { display: flex; align-items: center; gap: 14px; justify-content: space-between; }
+.ai-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ai-opt { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 2px solid var(--paper-3); border-radius: 14px; background: #fff; cursor: pointer; }
+.ai-opt.on { border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); background: #FFF6EC; }
+.ai-opt input { accent-color: var(--accent); margin-top: 3px; }
+.ai-steps { display: flex; flex-direction: column; gap: 8px; }
+.ai-step { display: grid; grid-template-columns: 150px 1fr 190px; align-items: center; gap: 10px; opacity: .5; }
+.ai-step.active { opacity: 1; }
+.ai-step.ok b::after { content: " ✓"; color: #1E8E4E; }
+.ai-step .muted { font-size: 12.5px; }
+.ai-install pre.out { margin: 0; max-height: 140px; overflow: auto; font-family: var(--mono); font-size: 11.5px; background: #221D1A; color: #F4EDE4; padding: 8px 10px; border-radius: 10px; white-space: pre-wrap; }
+@media (max-width: 860px) { .ai-opts { grid-template-columns: 1fr; } .ai-step { grid-template-columns: 1fr; } }
+.offline .off-head .t { font-weight: 700; font-size: 15.5px; }
+.offline .off-head .d { color: var(--ink-2); font-size: 13px; margin-top: 3px; line-height: 1.45; }
+.shirt-box { margin: 6px 0 14px; padding: 4px 14px 10px; border: 2px dashed var(--paper-3); border-radius: 16px; background: #fff; }
+.shirt-box .row .t { font-weight: 700; }
+.shirt-box .row .d { color: var(--ink-2); font-size: 13px; }
+.shirt-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.shirt-color { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13.5px; }

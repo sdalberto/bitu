@@ -1,7 +1,8 @@
 'use strict';
 /**
- * Conexão com Claude (Anthropic) e ChatGPT (OpenAI).
- * Os dois falam o mesmo "idioma interno" de ferramentas; aqui fica a tradução para cada API.
+ * Conexão com Claude (Anthropic), ChatGPT (OpenAI) e servidores locais (OpenClaw, Ollama, LM Studio).
+ * Todos falam o mesmo "idioma interno" de ferramentas; aqui fica a tradução para cada API.
+ * Os locais usam o formato da OpenAI, só que apontando para o próprio PC.
  */
 
 const ANTHROPIC = 'https://api.anthropic.com/v1';
@@ -23,12 +24,18 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 async function request(url, { method = 'GET', headers = {}, body, signal, raw = false } = {}) {
   let lastErr;
   for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await fetch(url, {
-      method,
-      headers: body && !(body instanceof FormData) ? { 'content-type': 'application/json', ...headers } : headers,
-      body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
-      signal
-    });
+    let res;
+    try {
+      res = await fetch(url, {
+        method,
+        headers: body && !(body instanceof FormData) ? { 'content-type': 'application/json', ...headers } : headers,
+        body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
+        signal
+      });
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      throw Object.assign(new Error('Sem conexão com ' + new URL(url).host), { status: 0 });
+    }
     if (res.ok) return raw ? res : res.json();
     const text = await res.text().catch(() => '');
     let msg = text;
@@ -46,7 +53,7 @@ async function request(url, { method = 'GET', headers = {}, body, signal, raw = 
 function friendlyError(status, msg) {
   if (status === 401) return 'Chave inválida ou revogada. Reconecte em Configurações > Conexão.';
   if (status === 403) return 'Sua conta não tem acesso a esse modelo ou recurso.';
-  if (status === 404) return 'Modelo não encontrado. Escolha outro em Configurações > Conexão.';
+  if (status === 404) return 'Modelo ou endereço não encontrado. Confira em Configurações > Conexão.';
   if (status === 429) return 'Muitos pedidos ou créditos esgotados na sua conta. Tenta de novo daqui a pouco.';
   if (status === 529 || status === 503) return 'O serviço está sobrecarregado agora. Tenta de novo em instantes.';
   return `Erro ${status}: ${String(msg).slice(0, 300)}`;
@@ -88,10 +95,13 @@ async function validateKey(provider, key) {
  * usa ferramentas, e devolve tudo normalizado.
  */
 class Turn {
-  constructor({ provider, key, model, system, history, tools, signal }) {
+  constructor({ provider, key, model, system, history, tools, signal, baseUrl, vision = true }) {
     this.provider = provider;
     this.key = key;
-    this.model = model || FALLBACK[provider];
+    this.model = model || FALLBACK[provider] || '';
+    this.baseUrl = (baseUrl || OPENAI).replace(/\/+$/, '');
+    this.vision = vision;
+    this.useTools = true;
     this.system = system;
     this.tools = tools;
     this.signal = signal;
@@ -127,18 +137,32 @@ class Turn {
   }
 
   async _stepOpenAI() {
-    const data = await request(`${OPENAI}/chat/completions`, {
-      method: 'POST',
-      signal: this.signal,
-      headers: { authorization: `Bearer ${this.key}` },
-      body: {
-        model: this.model,
-        messages: this.messages,
-        tools: this.tools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.schema } }))
+    const local = this.provider === 'local';
+    const body = { model: this.model, messages: this.messages };
+    if (this.useTools) body.tools = this.tools.map(t => ({ type: 'function', function: { name: t.name, description: t.description, parameters: t.schema } }));
+    if (local) body.stream = false;
+    let data;
+    try {
+      data = await request(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        signal: this.signal,
+        headers: this.key ? { authorization: `Bearer ${this.key}` } : {},
+        body
+      });
+    } catch (e) {
+      if (local && e.status === 0) throw new Error('Não achei o servidor local. Ele está aberto? Confira em Configurações > Conexão.');
+      // alguns modelos locais não aceitam ferramentas: tenta de novo só conversando
+      if (local && this.useTools && e.status === 400 && /tool/i.test(e.message)) {
+        this.useTools = false;
+        return this._stepOpenAI();
       }
-    });
-    const msg = data.choices[0].message;
-    this.messages.push(msg);
+      throw e;
+    }
+    const msg = (data.choices && data.choices[0] && data.choices[0].message) || { role: 'assistant', content: '' };
+    if (msg.content && typeof msg.content !== 'string') msg.content = [].concat(msg.content).map(c => c.text || '').join('');
+    // modelos de raciocínio locais às vezes devolvem o "pensamento" junto
+    if (typeof msg.content === 'string') msg.content = msg.content.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+    this.messages.push({ role: 'assistant', content: msg.content || '', ...(msg.tool_calls ? { tool_calls: msg.tool_calls } : {}) });
     const calls = (msg.tool_calls || []).map(c => {
       let input = {};
       try { input = JSON.parse(c.function.arguments || '{}'); } catch { /* argumentos inválidos */ }
@@ -165,8 +189,10 @@ class Turn {
     }
     const images = [];
     for (const r of results) {
-      this.messages.push({ role: 'tool', tool_call_id: r.id, content: r.text });
-      if (r.image) images.push(r.image);
+      let text = r.text;
+      if (r.image && !this.vision) text += '\n(O modelo atual não enxerga imagens. Diga ao usuário que, para eu ver a tela, ele precisa escolher um modelo com visão em Configurações > Conexão.)';
+      this.messages.push({ role: 'tool', tool_call_id: r.id, content: text });
+      if (r.image && this.vision) images.push(r.image);
     }
     if (images.length) {
       this.messages.push({

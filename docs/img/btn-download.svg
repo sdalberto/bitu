@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="84" viewBox="0 0 360 84" role="img" aria-label="Baixar para Windows">
+  <rect x="6" y="8" width="352" height="74" rx="20" fill="#2B2522"/>
+  <rect x="2" y="2" width="352" height="74" rx="20" fill="#FF8A3D" stroke="#2B2522" stroke-width="3"/>
+  <g transform="translate(24 21)"><rect width="15" height="15" rx="2" fill="#2B2522"/><rect x="18" width="15" height="15" rx="2" fill="#2B2522"/><rect y="18" width="15" height="15" rx="2" fill="#2B2522"/><rect x="18" y="18" width="15" height="15" rx="2" fill="#2B2522"/></g>
+  <text x="74" y="36" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif" font-size="22" font-weight="800" fill="#2B2522">Baixar para Windows</text>
+  <text x="74" y="58" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#5E544D">grátis · instala com 1 clique</text>
+</svg>
